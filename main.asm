@@ -8,8 +8,9 @@ SECTION "rst0",HOME[$0]
 	ld l, a
 	jp [hl]
 
-SECTION "rst8",HOME[$8]
-	reti
+SECTION "rst8",HOME[$8] ; HackPredef
+    ld [TempA], a ; 3
+	jp Rst8Cont
 
 SECTION "rst10",HOME[$10] ; Bankswitch
 	ld [$2000], a
@@ -62,6 +63,18 @@ SECTION "serial",HOME[$58] ; serial interrupt
 
 SECTION "joypad",HOME[$60] ; joypad interrupt
 	reti
+
+Rst8Cont:
+    ld a, [ROMBank]
+	ld [BankOld],a
+	ld a, BANK(HackPredef)
+	rst $10
+    call HackPredef
+    ld [TempA], a
+    ld a, [BankOld]
+	rst $10
+	ld a, [TempA]
+	ret
 	
 SECTION "romheader",HOME[$100]
 
@@ -194,10 +207,17 @@ WriteChar: ; 1f96
 	ld a, [$c6c3]
 	ld l, a
 	ld a, d
-	di
-	call $17cb
-	ld [hl], a
-	ei
+	;di ; 1
+	;call $17cb ; 3
+	;ld [hl], a ; 1
+	
+	ld [hSaveA], a ; 2
+	xor a ; 1
+	rst $8 ; 1
+	nop
+	nop
+	
+	;ei
 	inc hl
 	ld a, h
 	ld [$c6c2], a
@@ -248,6 +268,47 @@ INCBIN "gfx/vwffont.1bpp"
 
 VWFTable:
 INCLUDE "vwftable.asm"
+
+HackPredefTable:
+    dw WriteCharAdvice
+
+HackPredef:
+    ; save hl
+    ld a, h
+    ld [TempH], a
+    ld a, l
+    ld [TempL], a
+    
+    push bc
+    ld hl, HackPredefTable
+    ld b, 0
+    ld a, [TempA] ; old a
+    ld c, a
+    add hl, bc
+    add hl, bc
+    ld a, [hli]
+    ld c, a
+    ld a, [hl]
+    ld b, a
+    push bc
+    pop hl
+    pop bc
+    
+    push hl
+    ld a, [TempH]
+    ld h, a
+    ld a, [TempL]
+    ld l, a
+    ret ; jumps to hl
+
+WriteCharAdvice:
+    ld a, [hSaveA]
+    ; original code
+	di ; 1
+	call $17cb ; 3
+	ld [hl], a 
+	ei
+    ret
 
 SECTION "bank8",DATA,BANK[$8]
 INCBIN "baserom.gbc", $20000,$4000
