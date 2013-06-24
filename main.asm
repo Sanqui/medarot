@@ -1,5 +1,75 @@
 SECTION "bank0",HOME
-INCBIN "baserom.gbc", $0,$1cc9
+SECTION "rst0",HOME[$0]
+	pop hl
+	add a
+	rst $28
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	jp [hl]
+
+SECTION "rst8",HOME[$8]
+	reti
+
+SECTION "rst10",HOME[$10] ; Bankswitch
+	ld [$2000], a
+	ret
+
+SECTION "rst18",HOME[$18] 
+	ld a, [$c6e0]
+	ld [$2000], a
+	ret
+
+SECTION "rst20",HOME[$20]
+	add l
+	ld l, a
+	ret c
+	dec h
+	ret
+
+SECTION "rst28",HOME[$28]
+	add l
+	ld l, a
+	ret nc
+	inc h
+	ret
+
+SECTION "rst30",HOME[$30]
+    add a
+    rst $28
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ret
+
+SECTION "rst38",HOME[$38] ; Unused
+	ld a, [hli]
+	ld l, [hl]
+	ld h, a
+	ret
+
+SECTION "vblank",HOME[$40] ; vblank interrupt
+	jp $049b
+
+SECTION "lcd",HOME[$48] ; lcd interrupt
+	jp $04d0
+
+SECTION "timer",HOME[$50] ; timer interrupt
+	nop
+
+SECTION "serial",HOME[$58] ; serial interrupt
+	jp $3e12
+
+SECTION "joypad",HOME[$60] ; joypad interrupt
+	reti
+	
+SECTION "romheader",HOME[$100]
+
+INCBIN "baserom.gbc", $100, $50
+
+SECTION "start",HOME[$150]
+
+INCBIN "baserom.gbc", $150,$1cc9-$150
 
 PutChar:
 	ld a, [$c6c6]
