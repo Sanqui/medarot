@@ -217,8 +217,68 @@ WriteChar: ; 1f96
 ; 0x1ff2
 
 
-INCBIN "baserom.gbc", $1ff2,$4000-$1ff2
+INCBIN "baserom.gbc", $1ff2,$2fcf-$1ff2
 
+PutString: ; 2fcf
+	ld a, h
+	ld [$c640], a
+	ld a, l
+	ld [$c641], a
+	ld a, b
+	ld [$c642], a
+	ld a, c
+	ld [$c643], a
+.char
+	ld a, [$c640]
+	ld h, a
+	ld a, [$c641]
+	ld l, a
+	ld a, [hl]
+	cp $50
+	ret z
+	ld [$c64e], a
+	call $2068
+	ld a, [$c64f]
+	or a
+	jp z, $300d
+	ld a, [$c642]
+	ld h, a
+	ld a, [$c643]
+	ld l, a
+	ld bc, $ffe0
+	add hl, bc
+	ld a, [$c64f]
+	di
+	call $17cb
+	ld [hl], a
+	ei
+	ld a, [$c642]
+	ld h, a
+	ld a, [$c643]
+	ld l, a
+	ld a, [$c64e]
+	di
+	call $17cb
+	ld [hl], a
+	ei
+	inc hl
+	ld a, h
+	ld [$c642], a
+	ld a, l
+	ld [$c643], a
+	ld a, [$c640]
+	ld h, a
+	ld a, [$c641]
+	ld l, a
+	inc hl
+	ld a, h
+	ld [$c640], a
+	ld a, l
+	ld [$c641], a
+	jp .char
+; 0x303b
+
+INCBIN "baserom.gbc", $303b,$4000-$303b
 
 SECTION "bank1",DATA,BANK[$1]
 INCBIN "baserom.gbc", $4000,$4000
