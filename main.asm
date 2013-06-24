@@ -69,7 +69,24 @@ INCBIN "baserom.gbc", $100, $50
 
 SECTION "start",HOME[$150]
 
-INCBIN "baserom.gbc", $150,$1cc9-$150
+INCBIN "baserom.gbc", $150,$cb7-$150
+
+CopyVRAMData: ;  cb7
+	ld a, [hli]
+	di
+	call $17cb
+	ld [de], a
+	ei
+	inc de
+	dec bc
+	ld a, b
+	or c
+	jr nz, CopyVRAMData ; 0xcc2 $f3
+	ret
+; 0xcc5
+
+
+INCBIN "baserom.gbc", $cc5,$1cc9-$cc5
 
 PutChar:
 	ld a, [$c6c6]
