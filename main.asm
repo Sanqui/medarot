@@ -156,6 +156,12 @@ INCBIN "baserom.gbc", $1c000,$27a0
 
 ; free space
 
+VWFont:
+INCBIN "gfx/vwffont.1bpp"
+
+VWFTable:
+INCLUDE "vwftable.asm"
+
 SECTION "bank8",DATA,BANK[$8]
 INCBIN "baserom.gbc", $20000,$4000
 
