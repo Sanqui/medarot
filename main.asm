@@ -522,6 +522,9 @@ WriteVWFChar:
     add hl, bc
     ld a, [hl]
     ld [VWFCharWidth], a
+    ; if 0 width, skip this !!
+    and a
+    jr z, .NoDrawing
 .WidthWritten
     ; Set up some things for building the tile.
     ; Special cased to fix column $0, which is invalid (not a power of 2)
@@ -564,6 +567,7 @@ WriteVWFChar:
 .Done
     ld a, c
     ld [VWFCurTileCol], a
+.NoDrawing
     
     ;ld de, W_VWF_BUILDAREA1
     ;ld hl, W_VWF_BUILDAREA3
@@ -590,7 +594,6 @@ WriteVWFChar:
     pop de
     
     ; Write the new tile(s)
-    ; Let's try DMA instead!
 
     ld hl, VWFBuildArea2
     ld bc, $0008
