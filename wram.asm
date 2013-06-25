@@ -1,6 +1,5 @@
 SECTION "hack",BSS[$DFA0]
 TempA: ds 1
-ROMBank: ds 1
 BankOld: ds 1
 TempH:
     ds 1

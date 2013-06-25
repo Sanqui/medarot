@@ -13,12 +13,14 @@ SECTION "rst8",HOME[$8] ; HackPredef
 	jp Rst8Cont
 
 SECTION "rst10",HOME[$10] ; Bankswitch
+    ld [hBank], a
 	ld [$2000], a
 	ret
 
 SECTION "rst18",HOME[$18] 
 	ld a, [$c6e0]
-	ld [$2000], a
+	;ld [$2000], a
+	rst $10
 	ret
 
 SECTION "rst20",HOME[$20]
@@ -65,14 +67,18 @@ SECTION "joypad",HOME[$60] ; joypad interrupt
 	reti
 
 Rst8Cont:
-    ld a, [ROMBank]
+    ld a, [hBank]
 	ld [BankOld],a
 	ld a, BANK(HackPredef)
-	rst $10
+	ld [$2000], a
     call HackPredef
     ld [TempA], a
     ld a, [BankOld]
-	rst $10
+    cp a, $17
+    jr z, .bs
+    ld a, [$c6e0]
+.bs
+	ld [$2000], a
 	ld a, [TempA]
 	ret
 	
@@ -113,11 +119,11 @@ PutChar:
 .asm_1cda
 	ld a, [$c6c1]
 	or a
-	jr z, .asm_1ce5 ; 0x1cde $5
+	jr .nowait
 	dec a
 	ld [$c6c1], a
 	ret
-.asm_1ce5
+.nowait
 	push bc
 	ld a, b
 	and $f0
@@ -195,10 +201,11 @@ WriteChar: ; 1f96
 	ld bc, $ffe0
 	add hl, bc
 	pop af
-	di
-	call $17cb
-	ld [hl], a ; "/°
-	ei
+	;di
+	;call $17cb
+	;ld [hl], a ; "/°
+	;ei
+	db 0, 0, 0, 0, 0, 0 ; waste of cycles
 	pop hl
 	ld a, [hl]
 	ld d, a
@@ -214,8 +221,7 @@ WriteChar: ; 1f96
 	ld [hSaveA], a ; 2
 	xor a ; 1
 	rst $8 ; 1
-	nop
-	nop
+	ld a, [hSaveA]
 	nop
 	
 	;ei
@@ -238,7 +244,33 @@ WriteChar: ; 1f96
 ; 0x1ff2
 
 
-INCBIN "baserom.gbc", $1ff2,$2fcf-$1ff2
+INCBIN "baserom.gbc", $1ff2,$2dba-$1ff2
+
+; 
+    ld a, $17
+;    ld [$2000], a
+    rst $10
+    nop
+    nop
+
+INCBIN "baserom.gbc", $2dbf,$2e58-$2dbf
+
+; 
+    ld a, $17
+;    ld [$2000], a
+    rst $10
+    nop
+    nop
+
+INCBIN "baserom.gbc", $2e5d,$2f43-$2e5d
+
+    ld a, $17
+;    ld [$2000], a
+    rst $10
+    nop
+    nop
+
+INCBIN "baserom.gbc", $2f48,$2fcf-$2f48
 
 PutString: ; 2fcf
 	ld a, h
@@ -269,20 +301,30 @@ PutString: ; 2fcf
 	ld bc, $ffe0
 	add hl, bc
 	ld a, [$c64f]
-	di
-	call $17cb
-	ld [hl], a
-	ei
+	;di
+	;call $17cb
+	;ld [hl], a ; "/°
+	;ei
+	db 0, 0, 0, 0, 0, 0 ; waste of cycles
 	ld a, [$c642]
 	ld h, a
 	ld a, [$c643]
 	ld l, a
 	ld a, [$c64e]
-	di
-	call $17cb
-	ld [hl], a
-	ei
-	inc hl
+	
+	;di ; 1
+	;call $17cb ; 3
+	;ld [hl], a ; 1
+	
+	ld [hSaveA], a ; 2
+	xor a ; 1
+	rst $8 ; 1
+	ld a, [hSaveA]
+	nop
+	;db 0, 0, 0, 0, 0, 0, 0	
+	;ei
+	;inc hl
+	
 	ld a, h
 	ld [$c642], a
 	ld a, l
@@ -292,6 +334,7 @@ PutString: ; 2fcf
 	ld a, [$c641]
 	ld l, a
 	inc hl
+	;nop
 	ld a, h
 	ld [$c640], a
 	ld a, l
@@ -299,7 +342,15 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$4000-$303b
+INCBIN "baserom.gbc", $303b,$35bc-$303b
+
+    ld a, $17
+;    ld [$2000], a
+    rst $10
+    nop
+    nop
+
+INCBIN "baserom.gbc", $35c1,$4000-$35c1
 
 SECTION "bank1",DATA,BANK[$1]
 INCBIN "baserom.gbc", $4000,$4000
@@ -364,7 +415,14 @@ HackPredef:
 
 WriteCharAdvice:
     ld a, [hSaveA]
+    ;and a
+    ;ret z
+    ; better safe than sorry
+    push bc
+    push de
     call WriteVWFChar
+    pop de
+    pop bc
     ; original code
 	;di ; 1
 	;call $17cb ; 3
@@ -407,7 +465,7 @@ CopyColumn:
     ret
     
 WriteVWFChar:
-    push de
+    ;push de
     push hl
     ld [VWFChar], a
     ; Store the original tile location.
@@ -543,6 +601,11 @@ WriteVWFChar:
     dec a
     dec a
     jr nz, .SecondAreaUnused
+    ; if we went over one tile, copy it too.
+    
+    ld hl, VWFBuildArea3
+    ld bc, $0008
+    call CopyVRAMDataDouble
     
     ; If we went over one tile, make sure we start with it next time.
     ; also move through the tilemap.
@@ -596,12 +659,12 @@ WriteVWFChar:
     ;call WaitDMA
     pop hl
     
-    ld a, h
-    ld [$c6c2], a
-    ld a, l
-    ld [$c6c3], a
+    ;ld a, h
+    ;ld [$c6c2], a
+    ;ld a, l
+    ;ld [$c6c3], a
     
-    pop de
+    ;pop de
     ret
 
 CopyBytes: ; 0x3026

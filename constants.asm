@@ -1,1 +1,2 @@
-hSaveA EQU $FF8F
+hSaveA  EQU $FF90
+hBank   EQU $FF91
