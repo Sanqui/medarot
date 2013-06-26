@@ -1039,7 +1039,7 @@ StatsScreen: ; 6ec7e
 	ld a, $8
 	call $02b8
 	push de
-	ld hl, $0002
+	ld hl, -$0010;$0002
 	add hl, de
 	push hl
 	call $028e
