@@ -5,7 +5,10 @@ export LC_CTYPE=C
 
 all: medarot.gbc
 
-medarot.o: medarot.asm
+text/medarots.bin: 
+	python textpre.py 16 < text/medarots.txt > $@
+
+medarot.o: medarot.asm text/medarots.bin
 	rgbasm -o medarot.o medarot.asm
 
 medarot.gbc: medarot.o
@@ -14,4 +17,4 @@ medarot.gbc: medarot.o
 	cmp baserom.gbc $@
 
 clean:
-	rm -f medarot.o medarot.gbc
+	rm -f medarot.o medarot.gbc text/medarots.bin

@@ -758,7 +758,12 @@ SECTION "bank16",DATA,BANK[$16]
 INCBIN "baserom.gbc", $58000,$4000
 
 SECTION "bank17",DATA,BANK[$17]
-INCBIN "baserom.gbc", $5c000,$4000
+INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
+
+MedarotNames:
+    INCBIN "text/medarots.bin"
+
+INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
 
 SECTION "bank18",DATA,BANK[$18]
 INCBIN "baserom.gbc", $60000,$4000
