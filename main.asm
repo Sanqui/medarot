@@ -244,9 +244,21 @@ WriteChar: ; 1f96
 ; 0x1ff2
 
 
-INCBIN "baserom.gbc", $1ff2,$2dba-$1ff2
+INCBIN "baserom.gbc", $1ff2,$2d85-$1ff2
 
-; 
+LoadFont: ; 2d85
+    ld a, 2 ; LoadFontAdvice
+    rst $8
+    ;ld a, 3
+    ;call $12e8 ; Decompress
+    nop
+    nop
+    ret
+;2d8b
+
+INCBIN "baserom.gbc", $2d8b,$2dba-$2d8b
+
+; 2dba
     ld a, $17
 ;    ld [$2000], a
     rst $10
@@ -357,10 +369,25 @@ INCBIN "baserom.gbc", $303b,$35bc-$303b
 INCBIN "baserom.gbc", $35c1,$4000-$35c1
 
 SECTION "bank1",DATA,BANK[$1]
-INCBIN "baserom.gbc", $4000,$4000
+
+INCBIN "baserom.gbc", $4000,$4417-$4000
+
+    nop
+    nop
+    call LoadFont
+
+INCBIN "baserom.gbc", $441c,$8000-$441c
 
 SECTION "bank2",DATA,BANK[$2]
-INCBIN "baserom.gbc", $8000,$4000
+
+INCBIN "baserom.gbc", $8000,$8038-$8000
+
+    nop
+    nop
+    call LoadFont
+
+INCBIN "baserom.gbc", $803d,$c000-$803d
+
 
 SECTION "bank3",DATA,BANK[$3]
 INCBIN "baserom.gbc", $c000,$4000
@@ -619,6 +646,7 @@ INCLUDE "vwftable.asm"
 HackPredefTable:
     dw WriteCharAdvice
     dw ResetVWFPutString
+    dw LoadFontAdvice
 
 HackPredef:
     ; save hl
@@ -965,6 +993,17 @@ CopyVRAMDataDouble: ;  cb7, hl=from, de=to, bc=how many/2
 	or c
 	jr nz, CopyVRAMDataDouble ; 0xcc2 $f3
 	ret
+
+Font:
+    INCBIN "gfx/font.2bpp"
+FontEnd
+
+LoadFontAdvice:
+    ld hl, Font
+    ld de, $8800
+    ld bc, FontEnd-Font
+    call CopyVRAMData
+    ret
 
 SECTION "bank8",DATA,BANK[$8]
 INCBIN "baserom.gbc", $20000,$4000
