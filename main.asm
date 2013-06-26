@@ -217,7 +217,15 @@ WriteChar: ; 1f96
 ; 0x1ff2
 
 
-INCBIN "baserom.gbc", $1ff2,$2fcf-$1ff2
+INCBIN "baserom.gbc", $1ff2,$2d85-$1ff2
+
+LoadFont:
+    ld a, 3
+    call $12e8 ; Decompress
+    ret
+;2d8b
+
+INCBIN "baserom.gbc", $2d8b,$2fcf-$2d8b
 
 PutString: ; 2fcf
 	ld a, h
