@@ -362,7 +362,238 @@ SECTION "bank3",DATA,BANK[$3]
 INCBIN "baserom.gbc", $c000,$4000
 
 SECTION "bank4",DATA,BANK[$4]
-INCBIN "baserom.gbc", $10000,$4000
+
+INCBIN "baserom.gbc", $10000,$1120c-$10000
+
+SetUpMedarotData: ; 1120c 4:520c
+	ld a, [$c753]
+	call $02bb
+	ld a, [$c64e]
+	ld [$c745], a
+	xor a
+	ld [$c65a], a
+	ld hl, $af00
+	ld b, $0
+	ld a, [$c65a]
+	ld c, a
+	ld a, $8
+	call $02b8
+	ld a, $3
+	ld [de], a
+	ld a, $1
+	ld hl, $0000
+	add hl, de
+	ld [hl], a
+	ld a, [$c650]
+	ld hl, $5326
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $0001
+	add hl, de
+	ld [hl], a
+	ld a, [$c656]
+	ld hl, $000b
+	add hl, de
+	ld [hl], a
+	call $0162
+	ld a, [$c5f0]
+	and $3
+	ld hl, $c650
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $000d
+	add hl, de
+	ld [hl], a
+	call $0162
+	ld a, [$c5f0]
+	and $3
+	ld hl, $c650
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $000e
+	add hl, de
+	ld [hl], a
+	call $0162
+	ld a, [$c5f0]
+	and $3
+	ld hl, $c650
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $000f
+	add hl, de
+	ld [hl], a
+	call $0162
+	ld a, [$c5f0]
+	and $3
+	ld hl, $c650
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $0010
+	add hl, de
+	ld [hl], a
+	ld a, [$c65a]
+	inc a
+	ld hl, $0011
+	add hl, de
+	ld [hl], a
+	ld a, [$c64e]
+	push af
+	call $539b
+	pop af
+	ld [$c64e], a
+	ld hl, $000d
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	call $02be
+	push de
+	ld b, $9 ; MEDAROT NAME LENGTH
+	ld hl, $0002
+	add hl, de
+	ld d, h
+	ld e, l
+	ld hl, $c6a2
+.asm_112cb
+	ld a, [hli]
+	ld [de], a
+	inc de
+	dec b
+	jr nz, .asm_112cb ; 0x112cf $fa
+	pop de
+	ld a, $1
+	ld hl, $00c8
+	add hl, de
+	ld [hl], a
+	ld hl, $0080
+	add hl, de
+	ld a, $1
+	ld [hl], a
+	ld hl, $000b
+	add hl, de
+	ld a, [hl]
+	ld hl, $0081
+	add hl, de
+	ld [hl], a
+	ld a, [$c654]
+	ld b, a
+	ld a, [$c934]
+	add b
+	ld c, a
+	sub $b
+	jr c, .asm_112f9 ; 0x112f5 $2
+	ld c, $a
+.asm_112f9
+	ld a, c
+	ld hl, $0083
+	add hl, de
+	ld [hl], a
+	ld a, [$c655]
+	ld b, a
+	ld a, [$c935]
+	add b
+	ld c, a
+	sub $7
+	jr c, .asm_1130e ; 0x1130a $2
+	ld c, $6
+.asm_1130e
+	ld a, c
+	ld hl, $0084
+	add hl, de
+	ld [hl], a
+	ld a, [$c65a]
+	inc a
+	ld [$c65a], a
+	ld a, [$c64e]
+	dec a
+	ld [$c64e], a
+	jp nz, $521c
+	ret
+; 0x11326
+
+INCBIN "baserom.gbc", $11326,$136cc -$11326
+
+DrawMedarotData:
+	xor a
+	ld [$c652], a
+	ld hl, $ac00
+	ld b, $0
+	ld a, [$c652]
+	ld c, a
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jp z, $770d
+	ld hl, $0002
+	add hl, de
+	call $546f
+	ld [$c650], a
+	push de
+	ld hl, $98e0
+	ld b, $0
+	ld a, [$c652]
+	ld c, a
+	ld a, $6
+	call $02b8
+	pop de
+	ld a, [$c650]
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld b, h
+	ld c, l
+	ld hl, $0002
+	add hl, de
+	call $0264
+	ld a, [$c652]
+	inc a
+	ld [$c652], a
+	cp $3
+	jp nz, $76d0
+	xor a
+	ld [$c652], a
+	ld hl, $af00
+	ld b, $0
+	ld a, [$c652]
+	ld c, a
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jp z, $7749
+	push de
+	ld hl, $98ec
+	ld b, $0
+	ld a, [$c652]
+	ld c, a
+	ld a, $6
+	call $02b8
+	pop de
+	ld b, h
+	ld c, l
+	ld hl, $0002
+	add hl, de
+	call $0264
+	ld a, [$c652]
+	inc a
+	ld [$c652], a
+	cp $3
+	jp nz, $771d
+	ret
+; 0x13756
+
+INCBIN "baserom.gbc", $13756,$14000 -$13756
 
 SECTION "bank5",DATA,BANK[$5]
 INCBIN "baserom.gbc", $14000,$4000
