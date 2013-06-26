@@ -273,8 +273,12 @@ INCBIN "baserom.gbc", $2e5d,$2f43-$2e5d
 INCBIN "baserom.gbc", $2f48,$2fcf-$2f48
 
 PutString: ; 2fcf
-	ld a, h
-	ld [$c640], a
+    ld a, $1 ; 2 ; ResetVWFPutString
+    rst $8 ; 1
+    nop
+    
+	;ld a, h ; 1
+	;ld [$c640], a ; 3
 	ld a, l
 	ld [$c641], a
 	ld a, b
@@ -458,8 +462,8 @@ SetUpMedarotData: ; 1120c 4:520c
 	ld c, a
 	call $02be
 	push de
-	ld b, $9 ; MEDAROT NAME LENGTH
-	ld hl, $0002
+	ld b, $10 ; MEDAROT NAME LENGTH
+	ld hl, -$0010;$0002
 	add hl, de
 	ld d, h
 	ld e, l
@@ -582,7 +586,7 @@ DrawMedarotData:
 	pop de
 	ld b, h
 	ld c, l
-	ld hl, $0002
+	ld hl, -$0010;$0002
 	add hl, de
 	call $0264
 	ld a, [$c652]
@@ -614,6 +618,7 @@ INCLUDE "vwftable.asm"
 
 HackPredefTable:
     dw WriteCharAdvice
+    dw ResetVWFPutString
 
 HackPredef:
     ; save hl
@@ -660,6 +665,24 @@ WriteCharAdvice:
 	;ld [hl], a 
 	;ei
     ret
+
+ResetVWF:
+    push af
+    push hl
+    xor a
+    ld [VWFCurTileCol], a
+    ld hl, VWFCurTileNum
+    inc [hl]
+    pop hl
+    pop af
+	ret
+
+ResetVWFPutString:
+    call ResetVWF
+    ; original code
+	ld a, h ; 1
+	ld [$c640], a ; 3
+	ret
 
 CopyColumn:
     ; b = source column
