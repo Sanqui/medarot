@@ -592,7 +592,86 @@ SECTION "bank1a",DATA,BANK[$1a]
 INCBIN "baserom.gbc", $68000,$4000
 
 SECTION "bank1b",DATA,BANK[$1b]
-INCBIN "baserom.gbc", $6c000,$4000
+INCBIN "baserom.gbc", $6c000,$6ec7e-$6c000
+
+StatsScreen: ; 6ec7e
+	ld hl, $ac00
+	ld a, [$c0d7]
+	ld b, $0
+	ld c, a
+	ld a, $8
+	call $02b8
+	push de
+	ld hl, $0002
+	add hl, de
+	push hl
+	call $028e
+	ld h, $0
+	ld l, a
+	ld bc, $984b
+	add hl, bc
+	ld b, h
+	ld c, l
+	pop hl
+	call $0264
+	pop de
+	push de
+	ld hl, $0081
+	add hl, de
+	ld a, [hl]
+	ld de, $9410
+	call $027c
+	pop de
+	ld a, $41
+	ld hl, $988a
+	call $6d0e
+	push de
+	ld hl, $0081
+	add hl, de
+	ld a, [hl]
+	call $0282
+	ld hl, $c6a2
+	ld bc, $98ac
+	call $0264
+	pop de
+	call $6fc4
+	ld hl, $000d
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld [$a03d], a
+	push de
+	call $6d2c
+	pop de
+	ld hl, $000e
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld [$a03f], a
+	push de
+	call $6d54
+	pop de
+	ld hl, $000f
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld [$a041], a
+	push de
+	call $6d7c
+	pop de
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld [$a043], a
+	push de
+	call $6da4
+	pop de
+	call $6ece
+	ret
+; 0x6ed0e
+
+INCBIN "baserom.gbc", $6ed0e,$70000-$6ed0e
 
 SECTION "bank1c",DATA,BANK[$1c]
 INCBIN "baserom.gbc", $70000,$4000
