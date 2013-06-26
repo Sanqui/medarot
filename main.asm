@@ -247,7 +247,7 @@ WriteChar: ; 1f96
 INCBIN "baserom.gbc", $1ff2,$2d85-$1ff2
 
 LoadFont: ; 2d85
-    ld a, 2 ; LoadFontAdvice
+    ld a, 2 ; LoadFont_
     rst $8
     ;ld a, 3
     ;call $12e8 ; Decompress
@@ -376,17 +376,57 @@ INCBIN "baserom.gbc", $4000,$4417-$4000
     nop
     call LoadFont
 
-INCBIN "baserom.gbc", $441c,$8000-$441c
+INCBIN "baserom.gbc", $441c,$64a6-$441c
+
+; after battle won
+    call LoadFont
+;    call $15f ; probably not necessary
+
+INCBIN "baserom.gbc", $64a9,$8000-$64a9
 
 SECTION "bank2",DATA,BANK[$2]
 
 INCBIN "baserom.gbc", $8000,$8038-$8000
 
+; on start menu
     nop
     nop
     call LoadFont
 
-INCBIN "baserom.gbc", $803d,$c000-$803d
+INCBIN "baserom.gbc", $803d,$8b71-$803d
+
+; when returning to menu from items
+    call LoadFont
+
+INCBIN "baserom.gbc", $8b74,$9482-$8b74
+
+; on medal screen and parts screen
+    nop
+    nop
+    ld a, 3 ; LoadFont2
+    rst $8
+
+INCBIN "baserom.gbc", $9487,$9c78-$9487
+
+; when returning to menu
+    nop
+    nop
+    call LoadFont
+
+INCBIN "baserom.gbc", $9c7d,$9c84-$9c7d
+
+; when returning from save screen
+    call LoadFont
+
+INCBIN "baserom.gbc", $9c87,$a90b-$9c87
+
+; on medarot choice selection
+    nop
+    nop
+    ld a, 3 ; LoadFont2
+    rst $8
+
+INCBIN "baserom.gbc", $a910,$c000-$a910
 
 
 SECTION "bank3",DATA,BANK[$3]
@@ -394,7 +434,12 @@ INCBIN "baserom.gbc", $c000,$4000
 
 SECTION "bank4",DATA,BANK[$4]
 
-INCBIN "baserom.gbc", $10000,$1120c-$10000
+INCBIN "baserom.gbc", $10000,$10637-$10000
+
+    ld a, 4 ; dec a n load font 2
+    rst $8
+
+INCBIN "baserom.gbc", $1063a,$1120c-$1063a
 
 SetUpMedarotData: ; 1120c 4:520c
 	ld a, [$c753]
@@ -552,7 +597,13 @@ SetUpMedarotData: ; 1120c 4:520c
 	ret
 ; 0x11326
 
-INCBIN "baserom.gbc", $11326,$136cc -$11326
+INCBIN "baserom.gbc", $11326,$132ea -$11326
+
+; entering battle selecting medarot
+    ld a, 3 ; LoadFont2
+    rst $8
+
+INCBIN "baserom.gbc", $132ed,$136cc -$132ed
 
 DrawMedarotData:
 	xor a
@@ -646,7 +697,9 @@ INCLUDE "vwftable.asm"
 HackPredefTable:
     dw WriteCharAdvice
     dw ResetVWFPutString
-    dw LoadFontAdvice
+    dw LoadFont_
+    dw LoadFont2
+    dw Dec0AAndLoadFont2
 
 HackPredef:
     ; save hl
@@ -997,13 +1050,38 @@ CopyVRAMDataDouble: ;  cb7, hl=from, de=to, bc=how many/2
 Font:
     INCBIN "gfx/font.2bpp"
 FontEnd
+Font2LastRow:
+    INCBIN "gfx/font2lastrow.2bpp"
 
-LoadFontAdvice:
+LoadFont_:
     ld hl, Font
     ld de, $8800
     ld bc, FontEnd-Font
     call CopyVRAMData
     ret
+
+LoadFont2:
+    ld hl, Font
+    ld de, $8800
+    ld bc, (FontEnd-$100)-Font
+    call CopyVRAMData
+    ld hl, Font2LastRow
+    ld de, $8F00
+    ld bc, $100
+    call CopyVRAMData
+    ret
+
+Dec0AAndLoadFont2:
+    ld a, [$c6e0]
+    push af
+    ld a, BANK(HackPredef)
+    ld [$c6e0], a
+    ld a, $a
+    call $15f
+    pop af
+    ld [$c6e0], a
+    jp LoadFont2
+    
 
 SECTION "bank8",DATA,BANK[$8]
 INCBIN "baserom.gbc", $20000,$4000
@@ -1068,7 +1146,14 @@ SECTION "bank1a",DATA,BANK[$1a]
 INCBIN "baserom.gbc", $68000,$4000
 
 SECTION "bank1b",DATA,BANK[$1b]
-INCBIN "baserom.gbc", $6c000,$6ec7e-$6c000
+INCBIN "baserom.gbc", $6c000,$6eacb-$6c000
+
+; main battle scr, returning from stats
+    ;call $15f
+    ld a, 4 ; Dec0AAndLoadFont2
+    rst $8
+
+INCBIN "baserom.gbc", $6eace,$6ec7e-$6eace
 
 StatsScreen: ; 6ec7e
 	ld hl, $ac00
