@@ -711,12 +711,13 @@ VWFTable:
 INCLUDE "vwftable.asm"
 
 HackPredefTable:
-    dw WriteCharAdvice
-    dw PutStringAdvice
-    dw LoadFont_
-    dw LoadFont2
-    dw Dec0AAndLoadFont2
-    dw LoadFontDialogueAdvice
+    dw WriteCharAdvice ; 0
+    dw PutStringAdvice ; 1
+    dw LoadFont_ ; 2
+    dw LoadFont2 ; 3
+    dw Dec0AAndLoadFont2 ; 4
+    dw LoadFontDialogueAdvice ; 5
+    dw ResetVWF ; 6
 
 HackPredef:
     ; save hl
@@ -749,6 +750,12 @@ HackPredef:
 
 WriteCharAdvice:
     ld a, [hSaveA]
+    cp a, $49 ; Set English
+    jr nz, .regular
+    ld a, 1
+    ld [VWFCharset], a
+    ret
+.regular
     ;and a
     ;ret z
     ; better safe than sorry
