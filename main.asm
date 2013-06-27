@@ -376,7 +376,12 @@ INCBIN "baserom.gbc", $4000,$4417-$4000
     nop
     call LoadFont
 
-INCBIN "baserom.gbc", $441c,$64a6-$441c
+INCBIN "baserom.gbc", $441c,$4ad9-$441c
+
+; before naming screen
+    call LoadFont
+
+INCBIN "baserom.gbc", $4adc,$64a6-$4adc
 
 ; after battle won
     call LoadFont
@@ -989,7 +994,7 @@ WriteVWFChar:
 .FixOverflow
     ; If we went over the last character allocated for VWF tiles, wrap around.
     ld a, [VWFCurTileNum]
-    cp $e1-$80 ; may need tweaking
+    cp $b7-$80 ; may need tweaking
     jr c, .AlmostDone
     ld a, $00
     ld [VWFCurTileNum], a ; Prevent overflow
@@ -1048,23 +1053,30 @@ CopyVRAMDataDouble: ;  cb7, hl=from, de=to, bc=how many/2
 	ret
 
 Font:
-    INCBIN "gfx/font.2bpp"
+    INCBIN "gfx/font.1bpp"
 FontEnd
+Font1LastRow:
+    INCBIN "gfx/font1lastrow.2bpp"
 Font2LastRow:
     INCBIN "gfx/font2lastrow.2bpp"
 
-LoadFont_:
+LoadFontChars:
     ld hl, Font
     ld de, $8800
     ld bc, FontEnd-Font
+    call CopyVRAMDataDouble
+    ret
+
+LoadFont_:
+    call LoadFontChars
+    ld hl, Font1LastRow
+    ld de, $8F00
+    ld bc, $100
     call CopyVRAMData
     ret
 
 LoadFont2:
-    ld hl, Font
-    ld de, $8800
-    ld bc, (FontEnd-$100)-Font
-    call CopyVRAMData
+    call LoadFontChars
     ld hl, Font2LastRow
     ld de, $8F00
     ld bc, $100
