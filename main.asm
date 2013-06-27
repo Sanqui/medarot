@@ -247,8 +247,8 @@ WriteChar: ; 1f96
 
 INCBIN "baserom.gbc", $1ff2,$2d85-$1ff2
 
-LoadFont: ; 2d85
-    ld a, 2 ; LoadFont_
+LoadFontDialogue: ; 2d85
+    ld a, 5 ; LoadFontDialogueAdvice
     rst $8
     ;ld a, 3
     ;call $12e8 ; Decompress
@@ -286,7 +286,7 @@ INCBIN "baserom.gbc", $2e5d,$2f43-$2e5d
 INCBIN "baserom.gbc", $2f48,$2fcf-$2f48
 
 PutString: ; 2fcf
-    ld a, $1 ; 2 ; ResetVWFPutString
+    ld a, $1 ; 2 ; PutStringAdvice
     rst $8 ; 1
     nop
     
@@ -375,17 +375,20 @@ INCBIN "baserom.gbc", $4000,$4417-$4000
 
     nop
     nop
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $441c,$4ad9-$441c
 
 ; before naming screen
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $4adc,$64a6-$4adc
 
 ; after battle won
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 ;    call $15f ; probably not necessary
 
 INCBIN "baserom.gbc", $64a9,$8000-$64a9
@@ -397,12 +400,14 @@ INCBIN "baserom.gbc", $8000,$8038-$8000
 ; on start menu
     nop
     nop
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $803d,$8b71-$803d
 
 ; when returning to menu from items
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $8b74,$9482-$8b74
 
@@ -417,12 +422,14 @@ INCBIN "baserom.gbc", $9487,$9c78-$9487
 ; when returning to menu
     nop
     nop
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $9c7d,$9c84-$9c7d
 
 ; when returning from save screen
-    call LoadFont
+    ld a, 2 ; LoadFont_
+    rst $8
 
 INCBIN "baserom.gbc", $9c87,$a90b-$9c87
 
@@ -705,10 +712,11 @@ INCLUDE "vwftable.asm"
 
 HackPredefTable:
     dw WriteCharAdvice
-    dw ResetVWFPutString
+    dw PutStringAdvice
     dw LoadFont_
     dw LoadFont2
     dw Dec0AAndLoadFont2
+    dw LoadFontDialogueAdvice
 
 HackPredef:
     ; save hl
@@ -767,8 +775,10 @@ ResetVWF:
     pop af
 	ret
 
-ResetVWFPutString:
+PutStringAdvice:
     call ResetVWF
+    ld a, 1
+    ld [VWFCharset], a
     ; original code
 	ld a, h ; 1
 	ld [$c640], a ; 3
@@ -1096,6 +1106,7 @@ LoadFont_:
     ret
 
 LoadFont2:
+    ld a, 2 ; LoadFont_
     call LoadFontChars
     ld hl, Font2LastRow
     ld de, $8F00
@@ -1114,6 +1125,12 @@ Dec0AAndLoadFont2:
     ld [$c6e0], a
     jp LoadFont2
     
+LoadFontDialogueAdvice:
+    call LoadFont_
+    call ResetVWF
+    xor a
+    ld [VWFCharset], a ; set japanese
+    ret
 
 SECTION "bank8",DATA,BANK[$8]
 INCBIN "baserom.gbc", $20000,$4000
