@@ -183,8 +183,9 @@ WriteChar: ; 1f96
 	ld a, [hl]
 	ld d, a
 	ld a, $40
-	sub d
-	jp c, $1fc2
+	;sub d
+	nop
+	jp $1fc2;c, $1fc2
 	ld hl, $1ff2
 	ld c, d
 	ld b, $0
@@ -693,6 +694,9 @@ INCBIN "baserom.gbc", $1c000,$27a0
 
 ; free space
 
+FontKana:
+    INCBIN "gfx/fontkana.1bpp"
+
 VWFFont:
 INCBIN "gfx/vwffont.1bpp"
 
@@ -833,16 +837,25 @@ WriteVWFChar:
     
     ; Get the character in VWF's font.
     ld a, [VWFChar]
-    cp $80
-    jr c, .high
+    ;cp $80
+    ;jr c, .gotchar
     sub a, $80
-    jr .gotchar
-.high
-    add a, $20
+    ;jr .gotchar
+;.high
+;    add a, $20
 .gotchar
     ld [VWFChar], a
+    push af
     ; Store the character tile in BuildArea0.
+    ld a, [VWFCharset]
+    and a
+    jr nz, .english
+    ld hl, FontKana
+    jr .gotcharset
+.english
     ld hl, VWFFont
+.gotcharset
+    pop af
     ld b, 0
     ld c, a
     ld a, $8
@@ -855,6 +868,13 @@ WriteVWFChar:
     ld [VWFNumTilesUsed], a
     
     ; Get the character length from the width table.
+    ld a, [VWFCharset]
+    and a
+    jr nz, .variable
+    ld a, $8
+    ld [VWFCharWidth], a
+    jr .WidthWritten
+.variable
     ld a, [VWFChar]
     ld c, a
     ld b, $00

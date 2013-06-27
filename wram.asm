@@ -23,6 +23,8 @@ VWFCharWidth:
     ds 1
 ;VWFCurRow:
 ;    ds 1
+VWFCharset:
+    ds 1
 VWFDisabled:
     ds 1
 VWFResetDisabled: ; c00c
