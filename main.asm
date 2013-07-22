@@ -1182,7 +1182,11 @@ SECTION "bank15",DATA,BANK[$15]
 INCBIN "baserom.gbc", $54000,$4000
 
 SECTION "bank16",DATA,BANK[$16]
-INCBIN "baserom.gbc", $58000,$4000
+
+    INCBIN "baserom.gbc", $58000,$2000
+    INCBIN "text/story1.bin"
+    INCBIN "baserom.gbc", $5b000,$1000
+
 
 SECTION "bank17",DATA,BANK[$17]
 INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
@@ -1294,9 +1298,9 @@ SECTION "bank1c",DATA,BANK[$1c]
 INCBIN "baserom.gbc", $70000,$4000
 
 SECTION "bank1d",DATA,BANK[$1d]
-INCBIN "baserom.gbc", $74000,$4000
 
     INCBIN "text/battles.bin"
+    INCBIN "baserom.gbc", $76000,$2000
 
 SECTION "bank1e",DATA,BANK[$1e]
 INCBIN "baserom.gbc", $78000,$4000

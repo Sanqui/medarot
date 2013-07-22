@@ -2,6 +2,7 @@ import sys
 import struct
 
 mode = sys.argv[1]
+pad = int(sys.argv[2], 16)
 
 table = {}
 tablejp = {}
@@ -24,7 +25,6 @@ for line in open("extras/medarot1.tbl").readlines():
         tablejp[int(a, 16)] = b.replace("\\n", '\n')
 
 if mode == "list":
-    pad = int(sys.argv[2])
     for line in sys.stdin.readlines():
         bts = b""
         for char in line.strip():
@@ -53,29 +53,39 @@ elif mode == "bank":
     pts_data = b""
     text_data = b""
     
+    offsets = {}
+    
     for pointer in sorted(pointers.keys()):
-        offset = 0x4000+len(pointers)*2+len(text_data)
-        pts_data += struct.pack("<H", offset)
         
             
         jap, eng = pointers[pointer]
         if eng.startswith("="):
-            jap, eng = pointers[int(eng.lstrip('='), 16)]
-        if len(eng):
-            text_data += b"\x49" # set english
-            string = eng
+            #jap, eng = pointers[int(eng.lstrip('='), 16)]
+            pts_data += struct.pack("<H", offsets[int(eng.lstrip('='), 16)])
+            
         else:
-            string = jap
-        
-        for char in string:
-            try:
-                text_data += chr(table[char]) if len(eng) else chr(tablejp[char])
-            except KeyError: # temporary
-                pass
-        text_data += b"\x4f\x00" # end chars
+            offset = 0x4000+len(pointers)*2+len(text_data)
+            offsets[pointer] = offset
+            pts_data += struct.pack("<H", offset)
+            
+            
+            if len(eng):
+                text_data += b"\x49" # set english
+                string = eng
+            else:
+                string = jap
+            
+            for char in string:
+                try:
+                    text_data += chr(table[char]) if len(eng) else chr(tablejp[char])
+                except KeyError: # temporary
+                    pass
+            text_data += b"\x4f\x00" # end chars
     
     data = pts_data + text_data
-    data = data.ljust(0x3fff, b'\x00')
+    data = data.ljust(pad-1, b'\x00') # XXX why -1?
+    
+    assert len(data) == pad, "Data size exceeds pad value"
     
     print data
         
