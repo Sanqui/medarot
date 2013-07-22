@@ -1296,6 +1296,8 @@ INCBIN "baserom.gbc", $70000,$4000
 SECTION "bank1d",DATA,BANK[$1d]
 INCBIN "baserom.gbc", $74000,$4000
 
+    INCBIN "text/battles.bin"
+
 SECTION "bank1e",DATA,BANK[$1e]
 INCBIN "baserom.gbc", $78000,$4000
 

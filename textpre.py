@@ -1,10 +1,13 @@
 import sys
+import struct
 
-pad = int(sys.argv[1])
+mode = sys.argv[1]
 
 table = {}
+tablejp = {}
 
 i = 0xa5
+
 
 with open('chars.tbl') as f:
     for char in f.readlines():
@@ -14,17 +17,65 @@ with open('chars.tbl') as f:
             i += 1
         else:
             i = int(char[1:], 16)
+    
+for line in open("extras/medarot1.tbl").readlines():
+    if line.strip():
+        a, b = line.strip('\n').split("=", 1)
+        tablejp[int(a, 16)] = b.replace("\\n", '\n')
 
-for line in sys.stdin.readlines():
-    bts = b""
-    for char in line.strip():
-        bts += chr(table[char])
+if mode == "list":
+    pad = int(sys.argv[2])
+    for line in sys.stdin.readlines():
+        bts = b""
+        for char in line.strip():
+            bts += chr(table[char])
+        
+        bts += b"\x50"
+        
+        if len(bts) > pad:
+            raise ValueError("Too long: ",line)
+        
+        while len(bts) < pad:
+            bts += b"\x00"
+        sys.stdout.write(bts)
+
+elif mode == "bank":
+    pointers = {}
     
-    bts += b"\x50"
+    mediawiki = sys.stdin.read()
+    mediawiki = mediawiki[mediawiki.find("{|"):]
+    rows = mediawiki.split("|-")
+    for row in rows:
+        cols = row.split("\n|")[1:]
+        if len(cols) == 3:
+            pointers[int(cols[0], 16)] = (cols[1].rstrip(), cols[2].rstrip())
     
-    if len(bts) > pad:
-        raise ValueError("Too long: ",line)
+    pts_data = b""
+    text_data = b""
     
-    while len(bts) < pad:
-        bts += b"\x00"
-    sys.stdout.write(bts)
+    for pointer in sorted(pointers.keys()):
+        offset = 0x4000+len(pointers)*2+len(text_data)
+        pts_data += struct.pack("<H", offset)
+        
+            
+        jap, eng = pointers[pointer]
+        if eng.startswith("="):
+            jap, eng = pointers[int(eng.lstrip('='), 16)]
+        if len(eng):
+            text_data += b"\x49" # set english
+            string = eng
+        else:
+            string = jap
+        
+        for char in string:
+            try:
+                text_data += chr(table[char]) if len(eng) else chr(tablejp[char])
+            except KeyError: # temporary
+                pass
+        text_data += b"\x4f\x00" # end chars
+    
+    data = pts_data + text_data
+    data = data.ljust(0x3fff, b'\x00')
+    
+    print data
+        
