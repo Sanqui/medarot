@@ -85,7 +85,7 @@ elif mode == "bank":
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?
     
-    assert len(data) == pad, "Data size exceeds pad value"
+    assert len(data) <= pad, "Data size exceeds pad value: "+ hex(len(data))+" > "+hex(pad)
     
     print data
         

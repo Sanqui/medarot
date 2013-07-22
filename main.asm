@@ -180,7 +180,7 @@ TextTableBanks: ; 0x1d3b
     db $0d
     db $0e
     db $0f
-    db $16
+    db BANK(StoryText1)
     db $13
     db $00
     db $00
@@ -189,7 +189,7 @@ TextTableBanks: ; 0x1d3b
     db $1a
     db $00
     db $00
-    db $1d
+    db BANK(BattleText)
     db $00
     db $00
 
@@ -198,7 +198,7 @@ TextTableOffsets: ; 0x1d4b
     dw $7e00
     dw $7e00
     dw $7e00
-    dw $6000
+    dw StoryText1
     dw $7800
     dw $4000
     dw $4000
@@ -207,7 +207,7 @@ TextTableOffsets: ; 0x1d4b
     dw $4000
     dw $4000
     dw $4000
-    dw $4000
+    dw BattleText
     dw $4000
     dw $4000
 
@@ -1219,9 +1219,7 @@ INCBIN "baserom.gbc", $54000,$4000
 
 SECTION "bank16",DATA,BANK[$16]
 
-    INCBIN "baserom.gbc", $58000,$2000
-    INCBIN "text/story1.bin"
-    INCBIN "baserom.gbc", $5b000,$1000
+    INCBIN "baserom.gbc", $58000,$4000
 
 
 SECTION "bank17",DATA,BANK[$17]
@@ -1335,11 +1333,22 @@ INCBIN "baserom.gbc", $70000,$4000
 
 SECTION "bank1d",DATA,BANK[$1d]
 
-    INCBIN "text/battles.bin"
-    INCBIN "baserom.gbc", $76000,$2000
+    INCBIN "baserom.gbc", $74000,$4000
 
 SECTION "bank1e",DATA,BANK[$1e]
 INCBIN "baserom.gbc", $78000,$4000
 
 SECTION "bank1f",DATA,BANK[$1f]
 INCBIN "baserom.gbc", $7c000,$4000
+
+
+; look!  it's a new bank!
+SECTION "bank20",DATA,BANK[$20]
+    
+StoryText1:
+    INCBIN "text/story1.bin"
+    
+SECTION "bank21",DATA,BANK[$21]
+
+BattleText:
+    INCBIN "text/battles.bin"
