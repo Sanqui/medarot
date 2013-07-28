@@ -787,8 +787,14 @@ HackPredef:
 WriteCharAdvice:
     ld a, [hSaveA]
     cp a, $49 ; Set English
-    jr nz, .regular
+    jr nz, .more
     ld a, 1
+    ld [VWFCharset], a
+    ret
+.more
+    cp a, $48 ; Set Japanese
+    jr nz, .regular
+    xor a
     ld [VWFCharset], a
     ret
 .regular
@@ -1340,12 +1346,12 @@ INCBIN "baserom.gbc", $78000,$4000
 
 SECTION "bank1f",DATA,BANK[$1f]
 INCBIN "baserom.gbc", $7c000,$4000
+StoryText1:
 
 
 ; look!  it's a new bank!
 SECTION "bank20",DATA,BANK[$20]
     
-StoryText1:
     INCBIN "text/story1.bin"
     
 SECTION "bank21",DATA,BANK[$21]

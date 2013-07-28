@@ -1,5 +1,8 @@
+
+from __future__ import unicode_literals
 import sys
 import struct
+from io import open
 
 mode = sys.argv[1]
 pad = int(sys.argv[2], 16)
@@ -25,7 +28,7 @@ specials['*'] = Special(0x4f, end=True)
 specials['`'] = Special(0x50, bts=0, end=True)
 
 
-with open('chars.tbl') as f:
+with open('chars.tbl', encoding='utf-8') as f:
     for char in f.readlines():
         char = char.strip('\n')
         if not char.startswith("="):
@@ -34,7 +37,7 @@ with open('chars.tbl') as f:
         else:
             i = int(char[1:], 16)
     
-for line in open("extras/medarot1.tbl").readlines():
+for line in open("extras/medarot1.tbl", encoding='utf-8').readlines():
     if line.strip():
         a, b = line.strip('\n').split("=", 1)
         tablejp[b.replace("\\n", '\n')] = int(a, 16)
@@ -57,7 +60,7 @@ if mode == "list":
 elif mode == "bank":
     pointers = {}
     
-    mediawiki = sys.stdin.read()
+    mediawiki = sys.stdin.read().decode('utf-8')
     mediawiki = mediawiki[mediawiki.find("{|"):]
     rows = mediawiki.split("|-")
     for row in rows:
@@ -76,19 +79,24 @@ elif mode == "bank":
         jap, eng = pointers[pointer]
         if eng.startswith("="):
             #jap, eng = pointers[int(eng.lstrip('='), 16)]
-            pts_data += struct.pack("<H", offsets[int(eng.lstrip('='), 16)])
+            pts_data += struct.pack(b"<H", offsets[int(eng.lstrip('='), 16)])
             
         else:
             offset = 0x4000+len(pointers)*2+len(text_data)
             offsets[pointer] = offset
-            pts_data += struct.pack("<H", offset)
+            pts_data += struct.pack(b"<H", offset)
             
             
             if len(eng):
                 text_data += b"\x49" # set english
                 string = eng
             else:
+                text_data += b"\x48" # set japanese
                 string = jap
+            
+            #sys.stderr.write(string)
+            #sys.stderr.write(string[2])
+            
             
             special = ""
             ended = False
@@ -100,7 +108,7 @@ elif mode == "bank":
                     continue
                 if special:
                     if char == ">":
-                        sys.stderr.write( special + "\n")
+                        #sys.stderr.write( special + "\n")
                         special = special[1:] # lstrip <
                         try:
                             special = int(special, 16)
@@ -120,7 +128,7 @@ elif mode == "bank":
                             if not val: val = s.default
                             
                             if s.bts:
-                                fmt = "<"+["", "B", "H"][s.bts]
+                                fmt = b"<"+[b"", b"B", b"H"][s.bts]
                                 text_data += struct.pack(fmt, val)
                             
                             if s.end: ended = True
@@ -136,7 +144,7 @@ elif mode == "bank":
                         try:
                             text_data += chr(table[char]) if len(eng) else chr(tablejp[char])
                         except KeyError: # temporary
-                            sys.stderr.write("Warning: Unknown char: " + char + "\n")
+                            #sys.stderr.write("Warning: Unknown char: " + char + str(ord(jap[0])) + "\n")
                             text_data += chr(table["?"])
             if not ended:
                 text_data += b"\x4f\x00" # end chars
