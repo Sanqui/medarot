@@ -76,6 +76,8 @@ Rst8Cont:
     ld a, [BankOld]
     cp a, $17
     jr z, .bs
+    cp a, $1f
+    jr nc, .bs ; new bank
     ld a, [$c6e0]
 .bs
 	ld [$2000], a

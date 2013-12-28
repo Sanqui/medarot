@@ -10,7 +10,7 @@ pad = int(sys.argv[2], 16)
 table = {}
 tablejp = {}
 
-i = 0xa5
+i = 0x00
 
 # Look at me!  I can copy-paste!
 class Special():
@@ -31,7 +31,7 @@ specials['`'] = Special(0x50, bts=0, end=True)
 with open('chars.tbl', encoding='utf-8') as f:
     for char in f.readlines():
         char = char.strip('\n')
-        if not char.startswith("="):
+        if not char.startswith("@"):
             table[char.replace('\\n', '\n')] = i
             i += 1
         else:
@@ -55,7 +55,7 @@ with open('vwftable.asm') as f:
 #sys.stderr.write(str(vwf_table))
 
 def pack_string(string, table, ignore_vwf):
-    string = string.rstrip('\n')
+    string = string.rstrip('\n').replace('\n\n', '␤')
     
     text_data = b""
     line_data = b""
@@ -134,6 +134,9 @@ def pack_string(string, table, ignore_vwf):
                         if even_line: word_data += chr(0x4e)
                         else: word_data += chr(0x4c)
                         even_line = not even_line
+                    elif char == "␤":
+                        word_data += chr(0x4c)
+                        even_line = False
                     else:
                         word_data += chr(table[char])
                         word_px += vwf_table[table[char]]+1
@@ -142,11 +145,10 @@ def pack_string(string, table, ignore_vwf):
                     word_data += chr(table["?"])
                     word_px += vwf_table[table["?"]]+1
                 if not ignore_vwf:
-                    if char in (" ", "\n"):
+                    if char in (" ", "\n", "␤"):
                         if line_px + word_px > (18*8 if even_line else 17*8):
-                            if even_line: nl = chr(0x4e)
-                            else: nl = chr(0x4c)
-                            even_line = not even_line
+                            if even_line: nl = chr(0x4c)
+                            else: nl = chr(0x4e)
                             text_data += line_data[:-1] + nl
                             line_data, line_px = word_data, word_px
                             even_line = not even_line
@@ -154,14 +156,14 @@ def pack_string(string, table, ignore_vwf):
                             line_data += word_data
                             line_px += word_px
                         word_data, word_px = b"", 0
-                    if char == "\n":
+                    if char in "\n␤":
                         text_data += line_data
                         line_data, line_px = b"", 0
                         even_line = not even_line
     if not ignore_vwf:
         if line_px + word_px > (18*8 if even_line else 17*8):
-            if even_line: nl = chr(0x4e)
-            else: nl = chr(0x4c)
+            if even_line: nl = chr(0x4c)
+            else: nl = chr(0x4e)
             text_data += line_data[:-1] + nl
             line_data = word_data
         else:
