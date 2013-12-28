@@ -1,4 +1,4 @@
-
+# encoding: utf-8
 from __future__ import unicode_literals
 import sys
 import struct
@@ -41,6 +41,141 @@ for line in open("extras/medarot1.tbl", encoding='utf-8').readlines():
     if line.strip():
         a, b = line.strip('\n').split("=", 1)
         tablejp[b.replace("\\n", '\n')] = int(a, 16)
+
+vwf_table = [0]*0x80
+with open('vwftable.asm') as f:
+    for line in f.readlines():
+        if line and not line.startswith(';'):
+            for num in line.split(', '):
+                try:
+                    vwf_table.append(int(num.lstrip('db ')))
+                except ValueError:
+                    pass
+
+#sys.stderr.write(str(vwf_table))
+
+def pack_string(string, table, ignore_vwf):
+    string = string.rstrip('\n')
+    
+    text_data = b""
+    line_data = b""
+    line_px = 0
+    word_data = b""
+    word_px = 0
+    
+    special = ""
+    ended = False
+    skip = False
+    
+    even_line = True
+    
+    for char in string:
+        if skip:
+            skip = False
+            continue
+        if special:
+            if char in ">»":
+                #sys.stderr.write( special + "\n")
+                special = special[1:] # lstrip <
+                is_literal = True
+                try:
+                    special_num = int(special, 16)
+                except ValueError: # temporary
+                    is_literal = False
+                    
+                if is_literal and not special.startswith("D"):
+                    if special_num > 255:
+                        sys.stderr.write("Warning: Invalid literal special {} (0x{:3x})".format(special_num, special_num))
+                        continue
+                    word_data += chr(special_num)
+                    if not ignore_vwf:
+                        word_px += vwf_table[special_num]
+                else:
+                    s = special[0]
+                    if s not in specials.keys():
+                        sys.stderr.write("Warning: Invalid special: {}".format(special))
+                        special = ""
+                        continue
+                    s = specials[s]
+                    val = special[1:]
+                    word_data += chr(s.byte)
+                    matched = False
+                    for value, name in s.names.items():
+                        if name == val:
+                            val = value
+                            matched = True
+                    
+                    if not matched: val = int(val, 16)
+                    
+                    if val == "": val = s.default
+                    
+                    if s.bts:
+                        fmt = b"<"+(b"", b"B", b"H")[s.bts]
+                        word_data += struct.pack(fmt, val)
+                    
+                    if s.end: ended = True
+                    
+                    if special[0] == "&":
+                        if val == 0xd448: # num
+                            word_px += 3*8
+                        else:
+                            word_px += 8*8
+                
+                special = ""
+            else:
+                special += char
+        else:
+            if char == "\\": skip = True
+            if char in "<«":
+                special = char
+            else:
+                try:
+                    if char == "\n":
+                        if even_line: word_data += chr(0x4e)
+                        else: word_data += chr(0x4c)
+                        even_line = not even_line
+                    else:
+                        word_data += chr(table[char])
+                        word_px += vwf_table[table[char]]+1
+                except KeyError: # temporary
+                    sys.stderr.write("Warning: Unknown char: " + char.encode('ascii', 'backslashreplace') + "\n")
+                    word_data += chr(table["?"])
+                    word_px += vwf_table[table["?"]]+1
+                if not ignore_vwf:
+                    if char in (" ", "\n"):
+                        if line_px + word_px > (18*8 if even_line else 17*8):
+                            if even_line: nl = chr(0x4e)
+                            else: nl = chr(0x4c)
+                            even_line = not even_line
+                            text_data += line_data[:-1] + nl
+                            line_data, line_px = word_data, word_px
+                            even_line = not even_line
+                        else:
+                            line_data += word_data
+                            line_px += word_px
+                        word_data, word_px = b"", 0
+                    if char == "\n":
+                        text_data += line_data
+                        line_data, line_px = b"", 0
+                        even_line = not even_line
+    if not ignore_vwf:
+        if line_px + word_px > (18*8 if even_line else 17*8):
+            if even_line: nl = chr(0x4e)
+            else: nl = chr(0x4c)
+            text_data += line_data[:-1] + nl
+            line_data = word_data
+        else:
+            line_data += word_data
+        text_data += line_data
+    else:
+        text_data = word_data
+    
+    
+    if not ended:
+        text_data += b"\x4f\x00" # end chars
+    
+    return text_data
+
 
 if mode == "list":
     for line in sys.stdin.readlines():
@@ -91,63 +226,16 @@ elif mode == "bank":
                 text_data += b"\x49" # set english
                 string = eng
             else:
-                text_data += b"\x48" # set japanese
-                string = jap
+                text_data += b"\x49" # set english
+                string = "Some moonspeak"
+                eng = string
+                #text_data += b"\x48" # set japanese
+                #string = jap
             
             #sys.stderr.write(string)
             #sys.stderr.write(string[2])
             
-            
-            special = ""
-            ended = False
-            skip = False
-            
-            for char in string:
-                if skip:
-                    skip = False
-                    continue
-                if special:
-                    if char == ">":
-                        #sys.stderr.write( special + "\n")
-                        special = special[1:] # lstrip <
-                        try:
-                            special = int(special, 16)
-                            text_data += chr(special)
-                        except ValueError:
-                            s = specials[special[0]]
-                            val = special[1:]
-                            text_data += chr(s.byte)
-                            matched = False
-                            for value, name in s.names.items():
-                                if name == val:
-                                    val = value
-                                    matched = True
-                            
-                            if not matched: val = int(val, 16)
-                            
-                            if not val: val = s.default
-                            
-                            if s.bts:
-                                fmt = b"<"+[b"", b"B", b"H"][s.bts]
-                                text_data += struct.pack(fmt, val)
-                            
-                            if s.end: ended = True
-                        
-                        special = ""
-                    else:
-                        special += char
-                else:
-                    if char == "\\": skip = True
-                    if char == "<":
-                        special = char
-                    else:
-                        try:
-                            text_data += chr(table[char]) if len(eng) else chr(tablejp[char])
-                        except KeyError: # temporary
-                            #sys.stderr.write("Warning: Unknown char: " + char + str(ord(jap[0])) + "\n")
-                            text_data += chr(table["?"])
-            if not ended:
-                text_data += b"\x4f\x00" # end chars
+            text_data += pack_string(string, table if len(eng) else tablejp, not len(eng))
     
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?

@@ -1,4 +1,6 @@
-SECTION "hack",BSS[$DFA0]
+SECTION "WRAM Bank 1", WRAMX
+
+SECTION "hack", WRAMX[$DFA0]
 TempA: ds 1
 BankOld: ds 1
 TempH:
