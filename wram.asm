@@ -33,6 +33,8 @@ VWFResetDisabled: ; c00c
     ds 1
 StringDepth: ; c00d
     ds 1
+WTextOffsetHi: 
+    ds 1
 
 VWFBuildArea0:
     ds 8

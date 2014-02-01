@@ -11,6 +11,12 @@ text/text:
 	python textpre.py bank 0x4000 < text/Dialogue_1.mediawiki > text/Dialogue_1.bin
 	python textpre.py bank 0x4000 < text/Dialogue_2.mediawiki > text/Dialogue_2.bin
 	python textpre.py bank 0x4000 < text/Dialogue_3.mediawiki > text/Dialogue_3.bin
+	python textpre.py bank 0x2000 < text/Snippet_1.mediawiki > text/Snippet_1.bin
+	python textpre.py bank 0x2000 < text/Snippet_2.mediawiki > text/Snippet_2.bin
+	python textpre.py bank 0x2000 < text/Snippet_3.mediawiki > text/Snippet_3.bin
+	python textpre.py bank 0x2000 < text/Snippet_4.mediawiki > text/Snippet_4.bin
+	python textpre.py bank 0x2000 < text/Snippet_5.mediawiki > text/Snippet_5.bin
+	python textpre.py tilemaps 0x4000 > tilemaps.bin
 	touch text/text
 
 medarot.o: medarot.asm text text/text

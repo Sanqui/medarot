@@ -84,18 +84,18 @@ Rst8Cont:
 	ld a, [TempA]
 	ret
 
-Char4FAdvice:
-    ld a, $6
-    rst $8
-    jp Char4F
+;Char4FAdvice:
+;    ld a, $6
+;    rst $8
+;    jp Char4F
 Char4EAdvice:
     ld a, $6
     rst $8
     jp Char4E
-Char4CAdvice:
-    ld a, $6
-    rst $8
-    jp Char4C
+;Char4CAdvice:
+;    ld a, $6
+;    rst $8
+;    jp Char4C
 Char4AAdvice:
     ld a, $6
     rst $8
@@ -122,10 +122,157 @@ CopyVRAMData: ;  cb7
 	ret
 ; 0xcc5
 
+INCBIN "baserom.gbc", $cc5,$e2c-$cc5
 
-INCBIN "baserom.gbc", $cc5,$1cc9-$cc5
+LoadTilemap_: ; $e2c	ld a, $1e
+	ld a, BANK(Tilemaps) ; $1e
+	rst $10
+	push de
+	ld a, b
+	and $1f
+	ld b, a
+	ld a, c
+	and $1f
+	ld c, a
+	ld d, $0
+	ld e, c
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	ld hl, $9800
+	ld c, b
+	ld b, $0
+	add hl, bc
+	add hl, de
+	pop de
+	push hl
+	ld hl, Tilemaps
+	ld d, $0
+	sla e
+	rl d
+	add hl, de
+	ld a, [hli]
+	ld d, [hl]
+	ld e, a
+	pop hl
+	ld b, h
+	ld c, l
+	ld a, [de]
+	cp $ff
+	jp z, $0f83
+	and $3
+	jr z, .asm_e7d ; 0xe71 $a
+	dec a
+	jr z, .asm_eac ; 0xe74 $36
+	dec a
+	jp z, $0f20
+	jp $0f51
+.asm_e7d
+	inc de
+	ld a, [de]
+	cp $ff
+	jp z, $0f83
+	cp $fe
+	jr z, .asm_e97 ; 0xe86 $f
+	cp $fd
+	jr z, .asm_ea6 ; 0xe8a $1a
+	di
+	call $17cb
+	ld [hli], a
+	ei
+	call $2a2a
+	jr .asm_e7d ; 0xe95 $e6
+.asm_e97
+	push de
+	ld de, $0020
+	ld h, b
+	ld l, c
+	add hl, de
+	call $2a94
+	ld b, h
+	ld c, l
+	pop de
+	jr .asm_e7d ; 0xea4 $d7
+.asm_ea6
+	inc hl
+	call $2a2a
+	jr .asm_e7d ; 0xeaa $d1
+.asm_eac
+	inc de
+	ld a, [de]
+	cp $ff
+	jp z, $0f83
+	ld a, [de]
+	and $c0
+	cp $c0
+	jp z, $0f08
+	cp $80
+	jp z, $0ef0
+	cp $40
+	jp z, $0ed9
+	push bc
+	ld a, [de]
+	inc a
+	ld b, a
+	inc de
+	ld a, [de]
+	di
+	call $17cb
+	ld [hli], a
+	ei
+	dec b
+	jp nz, $0ec9
+	pop bc
+	jp $0eac
+; 0xed9
 
-PutChar:
+
+INCBIN "baserom.gbc", $ed9,$1c87-$ed9
+
+SetupDialogue: ; $1c87
+	ld [$c5c7], a
+	xor a
+	ld [$c5c8], a
+	call $1ab0
+	xor a
+	ld a, $a
+	rst $8 ; ZeroTextOffset
+	;ld [$c6c0], a
+	ld [$c6c5], a
+	ld [$c6c6], a
+	ld hl, $1cc6
+	ld b, $0
+	ld a, [$c765]
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld [$c6c1], a
+	ld [$c6c4], a
+	ld hl, $9c00
+	ld bc, $0041
+	ld a, [$c5c7]
+	cp $1
+	jr z, .asm_1cbc ; 0x1cb7 $3
+	ld bc, $0021
+.asm_1cbc
+	add hl, bc
+	ld a, h
+	ld [$c6c2], a
+	ld a, l
+	ld [$c6c3], a
+	ret
+; 0x1cc6
+
+   db 02, 04, 00
+
+PutChar: ; $1cc9
 	ld a, [$c6c6]
 	or a
 	ret nz
@@ -175,18 +322,21 @@ PutChar:
 	ld l, a
 	push hl
 	ld a, [$c6c0]
-	ld b, $0
-	ld c, a
+	
+	ld a, $8
+	rst $8 ; GetTextOffset
+	;ld b, $0
+	;ld c, a
 	add hl, bc
 	ld a, [hl]
 	cp $4f
-	jp z, Char4FAdvice
+	jp z, Char4F
 	cp $4e
 	jp z, Char4EAdvice
 	cp $4d
 	jp z, Char4D
 	cp $4c
-	jp z, Char4CAdvice
+	jp z, Char4C
 	cp $4b
 	jp z, Char4B
 	cp $4a
@@ -194,12 +344,12 @@ PutChar:
 	jp WriteChar
 
 TextTableBanks: ; 0x1d3b
-    db $0c
-    db $0d
-    db $0e
-    db $0f
+    db BANK(Snippet1)
+    db BANK(Snippet2)
+    db BANK(Snippet3)
+    db BANK(Snippet4)
     db BANK(StoryText1)
-    db $13
+    db BANK(Snippet5)
     db $00
     db $00
     db BANK(StoryText2)
@@ -212,12 +362,12 @@ TextTableBanks: ; 0x1d3b
     db $00
 
 TextTableOffsets: ; 0x1d4b
-    dw $7e00
-    dw $7e00
-    dw $7e00
-    dw $7e00
+    dw Snippet1
+    dw Snippet2
+    dw Snippet3
+    dw Snippet4
     dw StoryText1
-    dw $7800
+    dw Snippet5
     dw $4000
     dw $4000
     dw StoryText2
@@ -350,8 +500,12 @@ Char4E:
 	ld a, l
 	ld [$c6c3], a
 	ld a, [$c6c0]
-	inc a
-	ld [$c6c0], a
+	
+	nop
+	ld a, $b
+	rst $8 ; IncTextOffsetAndResetVWF
+	;inc a
+	;ld [$c6c0], a
 	pop hl
 	jp $1d11
 
@@ -361,9 +515,15 @@ Char4D: ; 0x1e46
 	ld a, [hl]
 	ld [$c6c1], a
 	ld [$c6c4], a
-	ld a, [$c6c0]
-	add $2
-	ld [$c6c0], a
+	;ld a, [$c6c0]
+	ld a, $9
+	rst $8 ; IncTextOffset
+	nop
+	nop
+	;add $2
+	ld a, $9
+	rst $8 ; IncTextOffset
+	;ld [$c6c0], a
 	pop hl
 	ld a, [$c6c1]
 	cp $ff
@@ -431,7 +591,9 @@ Char4C: ; 0x1e62
 	ld [$c6c3], a
 	ld a, [$c6c0]
 	inc a
-	ld [$c6c0], a
+	ld a, $b
+	rst $8 ; IncTextOffsetAndResetVWF
+	;ld [$c6c0], a
 	ret
 
 Char4B: ; 0x1ed6
@@ -447,11 +609,18 @@ Char4B: ; 0x1ed6
 	ld a, [hl]
 	cp $50
 	jr nz, .asm_1f04 ; 0x1ee4 $1e
-	ld a, [$c6c0]
-	inc a
-	inc a
-	inc a
-	ld [$c6c0], a
+	
+	ld a, $9
+	rst $8 ; IncTextOffset
+	ld a, $9
+	rst $8 ; IncTextOffset
+	ld a, $9
+	rst $8 ; IncTextOffset
+	;ld a, [$c6c0]
+	;inc a
+	;inc a
+	;inc a
+	;ld [$c6c0], a
 	xor a
 	ld [$c6c5], a
 	ld a, [$c6c4]
@@ -483,10 +652,11 @@ Char4B: ; 0x1ed6
 	ld bc, $ffe0
 	add hl, bc
 	pop af
-	di
-	call $17cb
-	ld [hl], a
-	ei
+	;di
+	;call $17cb
+	;ld [hl], a
+	;ei
+	db 0, 0, 0, 0, 0, 0
 	pop hl
 	ld a, [hl]
 	ld d, a
@@ -495,11 +665,18 @@ Char4B: ; 0x1ed6
 	ld a, [$c6c3]
 	ld l, a
 	ld a, d
-	di
-	call $17cb
-	ld [hl], a
-	ei
-	inc hl
+	;di
+	;call $17cb
+	;ld [hl], a
+	;ei
+	;inc hl
+	; ^ 7
+	ld [hSaveA], a ; 2
+	xor a ; 1
+	rst $8 ; 1 ; WriteCharAdvice
+	ld a, [hSaveA]
+	nop
+	
 	ld a, h
 	ld [$c6c2], a
 	ld a, l
@@ -543,7 +720,10 @@ Char4A: ; 0x1f5f
 	ld [$c6c3], a
 	ld a, [$c6c0]
 	inc a
-	ld [$c6c0], a
+	
+	ld a, $9
+	rst $8 ; IncTextOffset
+	;ld [$c6c0], a
 	pop hl
 	ret
 ; 0x1f96
@@ -603,7 +783,9 @@ WriteChar: ; 1f96
 	ld [$c6c3], a
 	ld a, [$c6c0]
 	inc a
-	ld [$c6c0], a
+	ld a, $9
+	rst $8 ; IncTextOffset
+	;ld [$c6c0], a
 	ld a, [$c6c4]
 	ld [$c6c1], a
 	pop hl
@@ -705,7 +887,7 @@ PutString: ; 2fcf
 	
 	ld [hSaveA], a ; 2
 	xor a ; 1
-	rst $8 ; 1
+	rst $8 ; 1 ; WriteCharAdvice
 	ld a, [hSaveA]
 	nop
 	;db 0, 0, 0, 0, 0, 0, 0	
@@ -1262,9 +1444,28 @@ SECTION "bank24",DATA,BANK[$24]
 INCLUDE "hack.asm"
 
 SECTION "bank25",DATA,BANK[$25]
+
+Snippet1:
+    INCBIN "text/Snippet_1.bin"
+Snippet2:
+    INCBIN "text/Snippet_2.bin"
+
 SECTION "bank26",DATA,BANK[$26]
+
+Snippet3:
+    INCBIN "text/Snippet_3.bin"
+Snippet4:
+    INCBIN "text/Snippet_4.bin"
+
 SECTION "bank27",DATA,BANK[$27]
+
+Snippet5:
+    INCBIN "text/Snippet_5.bin"
+
 SECTION "bank28",DATA,BANK[$28]
+Tilemaps:
+    INCBIN "tilemaps.bin"
+
 SECTION "bank29",DATA,BANK[$29]
 SECTION "bank2a",DATA,BANK[$2a]
 SECTION "bank2b",DATA,BANK[$2b]

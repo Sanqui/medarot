@@ -17,7 +17,12 @@ HackPredefTable:
     dw Dec0AAndLoadFont2 ; 4
     dw LoadFontDialogueAdvice ; 5
     dw ResetVWF ; 6
-    dw Char4FAdvice ; 7
+    ;dw Char4FAdvice ; 7
+    dw $0000
+    dw GetTextOffset ; 8
+    dw IncTextOffset ; 9
+    dw ZeroTextOffset ; $a
+    dw IncTextOffsetAndResetVWF ; $b
 
 HackPredef:
     ; save hl
@@ -82,8 +87,15 @@ ResetVWF:
     push hl
     xor a
     ld [VWFCurTileCol], a
+    ;ld [VWFCurTileNum], a
     ld hl, VWFCurTileNum
     inc [hl]
+    ld a, [VWFCurTileNum]
+    cp $b7-$80 ; may need tweaking
+    jr c, .ok
+    ld a, $00
+    ld [VWFCurTileNum], a ; Prevent overflow
+.ok
     pop hl
     pop af
 	ret
@@ -454,3 +466,30 @@ LoadFontDialogueAdvice:
 ;	or a
 ;	ret
 
+GetTextOffset:
+    ld a, [$c6c0]
+    ld c, a
+    ld a, [WTextOffsetHi]
+    ld b, a
+    ret
+
+IncTextOffset:
+    ld a, [$c6c0]
+    inc a
+    ld [$c6c0], a
+    ret nz
+    ld a, [WTextOffsetHi]
+    inc a
+    ld [WTextOffsetHi], a
+    ret
+
+ZeroTextOffset:
+    xor a
+    ld [$c6c0], a
+    ld [WTextOffsetHi], a
+    ret
+
+IncTextOffsetAndResetVWF:
+    call IncTextOffset
+    call ResetVWF
+    ret

@@ -25,25 +25,25 @@ Legend:
 |-
 |0x74000
 |ヘんどうの こうかが はっせいした!<S3c>\
-こうどうせいこうリつが さがった!<S3c><*4>
+<S02>こうどうせいこうリつが さがった!<S3c><*4>
 |Inflicted Flux status!<S3c>\
 <S02>Success rate down!<S3c><*4>
 |-
 |0x74002
 |ていしの こうかが はっせいした!<S3c>\
-しばらくのあいだ うごけない!<S3c><*4>
+<S02>しばらくのあいだ うごけない!<S3c><*4>
 |Inflicted Stop status!<S3c>\
 <S02>Unable to move!<S3c><*4>
 |-
 |0x74004
 |そくばくの こうかが はっせいした!<S3c>\
-スピードが おそくなった!<S3c><*4>
+<S02>スピードが おそくなった!<S3c><*4>
 |Inflicted Bind status!<S3c>\
 <S02>Speed decreased!<S3c><*4>
 |-
 |0x74006
 |けいぞくの こうかが はっせいした!<S3c>\
-いどうちゅうも ダメージを うける!<S3c><*4>
+<S02>いどうちゅうも ダメージを うける!<S3c><*4>
 |Inflicted Burn status!<S3c>\
 <S02>Continual damage!<S3c><*4>
 |-
@@ -694,7 +694,7 @@ Bonaparte
 |-
 |0x740fc
 |せんとうに さんかできません
-|It's unable to battle.
+|It can't battle in this state.
 |-
 | #######
 | colspan=2 | '''Attacking messages                                     '''
@@ -983,7 +983,7 @@ Bonaparte
 |-
 |0x7416c
 |しかし いんぺいに しっぱいした!<S3c><*4>
-|But it couldn't hide!<S3c><*4>
+|But it remained visible!<S3c><*4>
 |-
 |0x7416e
 |かいひリつが あがった!<S3c><*4>
@@ -1910,7 +1910,7 @@ Please assemble a Medarot!
 |カン!カン!カン! ロボトルエンド!
 さあ これで じかんぎれです!
 
-はんていのけっかを みてみましょう!<S78>
+<S02>はんていのけっかを みてみましょう!<S78>
 
 はんていのけっか!
 <&c6a2>の しょうリです!
@@ -1937,7 +1937,7 @@ Now to determine the winner!<S78>
 
 I... I can't go on!!
 
-<&NAME> fell into complete despair!
+<&NAME> fell into despair!
 |-
 |0x74308
 |<&NAME> は
@@ -1953,13 +1953,13 @@ I... I can't go on!!
 
 <&NAME> は
 めいっぱい おちこんだ!!
-|AAAAAAH!! I can't believe I lost in a place like this!
+|Aaarrgh!! I can't believe I lost in a place like this!
 
 This isn't... how I wanted....
 
 ............
 
-<&NAME> fell into complete despair!
+<&NAME> fell into despair!
 |-
 |0x7430c
 |<&NAME> は
@@ -1984,38 +1984,42 @@ This isn't... how I wanted....
 ともだちと あそぶことができます
 
 つうしん しますか？<*4>
-|
+|You can play with your friends using a Game Link cable here.
+
+Do you want to connect?<*4>
 |-
 |0x74312
 |つうしんまえに セーブしますが
 よろしいですか？<*4>
-|
+|The game will be saved before connecting.
+Is this alright?<*4>
 |-
 |0x74314
 |\
 ロボトルほんぶに アクセスします<S3c><*4>
-|
+|\
+Accessing Robottle HQ...<S3c><*4>
 |-
 |0x74316
 |つうしんちゅう!!<*4>
-|
+|Connecting!<*4>
 |-
 |0x74318
 |つうしん できませんでした!
-|
+|Couldn't connect!
 |-
 |0x7431a
 |2たい いじょう くまれた
 メダロットがないと できません<S3c><*1>
-|
+|You need at least 2 battle-ready Medarots to use this mode.<S3c><*1>
 |-
 |0x7431c
 |トレードする パーツがあリません<S3c><*1>
-|
+|You have no parts to trade.<S3c><*1>
 |-
 |0x7431e
 |<Sff>つうしんまちです!!<S1e><*4>
-|
+|<Sff>Waiting on connection!<S1e><*4>
 |-
 |0x74320
 |<&NAME> は
@@ -2023,7 +2027,10 @@ This isn't... how I wanted....
 
 みごとな しょうリです!
 これからもガンガンいこう!!
-|
+|<&NAME> won the battle!
+
+An excellent victory!
+Keep it up!
 |-
 |0x74322
 |<&NAME> は
@@ -2031,47 +2038,54 @@ This isn't... how I wanted....
 
 もういちど きたえなおしだ!
 こんどは がんばリましょう!!
-|
+|<&NAME> lost the battle!
+
+That's too bad!
+Train hard and go for the win!
 |-
 |0x74324
 |あなたは ロボトルしょうしゃとして
 「ロボとーる」を おこなえます!
-|
+|As the winner of the Robottle, you get to play "Robo-Toll"!
 |-
 |0x74326
 |あなたは ロボトルはいしゃとして
 パーツをとられてしまいます
-|
+|As the loser of the Robottle, one of your parts will be taken.
 |-
 |0x74328
 |<&c6a2> は
 「ロボとーる」に<S10>・・・・・・・・・\
-せいこうした!<S3c><*4>
-|
+<S02>せいこうした!<S3c><*4>
+|<&c6a2>'s Robo-Toll<S10>.........\
+<S02>Succeeded!<S3c><*4>
 |-
 |0x7432a
 |<&c6a2> は
 「ロボとーる」に<S10>・・・・・・・・・\
-しっぱいした!<S3c><*4>
-|
+<S02>しっぱいした!<S3c><*4>
+|<&c6a2>'s Robo-Toll<S10>.........\
+<S02>Failed!<S3c><*4>
 |-
 |0x7432c
 |ハズレ! なにも とれなかった!
 ざんねんですが しかたあリません!
-|
+|Miss! You didn't get anything!
+Too bad, maybe next time!
 |-
 |0x7432e
 |ハズレ!
 なにもとられずにすんだ! ラッキー!
-|
+|Miss! Nothing was taken!
+Phew, that was close!
 |-
 |0x74330
 |Yボタンでストップしてください!<*4>
-|
+|Press A to stop the wheel!<*4>
 |-
 |0x74332
 |パーツせんたくちゅうです!!<*4>
-|
+|Choosing parts!<*4>
 |-
 |0x74334
 |しかし かんぜんなかたちで
@@ -2081,54 +2095,54 @@ This isn't... how I wanted....
 |0x74336
 |<&NAME>は <&c70e>
 「<&c705>」を てにいれた<*2>
-|
+|<&NAME> got the <&c70e> part "<&c705>"!<*2>
 |-
 |0x74338
 |<&NAME>は <&c70e>
 「<&c705>」を とられた<*2>
-|
+|<&NAME> lost the <&c70e> part "<&c705>"!<*2>
 |-
 |0x7433a
 |メダルは いっぱいで もてなかった!<*2>
-|
+|You can't carry any more of that Medal!<*2>
 |-
 |0x7433c
 |そのパーツは
 いっぱいで もてなかった!!<*2>
-|
+|You can't carry any more of that part!<*2>
 |-
 |0x7433e
 |どのぶぶんを トレードしますか？<*4>
-|
+|Which type of part will you trade?<*4>
 |-
 |0x74340
 |どのぶぶんを トレードしますか？<*4>
-|
+|=0x7433e
 |-
 |0x74342
 |トレードするパーツはどれですか？<*4>
-|
+|Which part will you trade?<*4>
 |-
 |0x74344
 |トレードする パーツがあリません!
-|
+|You have no parts of that type to trade!
 |-
 |0x74346
 |「<&c705>」と
 「<&c6a2>」をトレードします<S3c><*4>
-|
+|"<&c705>" will be traded for "<&c6a2>".<S3c><*4>
 |-
 |0x74348
 |「<&c705>」は
 「<&c6a2>」にヘんかした!
-|
+|"<&c705>" transformed into "<&c6a2>"!
 |-
 | #######
 | colspan=2 | '''Other stuff                                     '''
 |-
 |0x7434a
 |そこには いけません!!
-|
+|You can't go that way!
 |-
 |0x7434c
 |ロボロボメダルを つかいますか？<*4>
@@ -2140,7 +2154,7 @@ This isn't... how I wanted....
 |-
 |0x74350
 |こうさん しますか？<*4>
-|
+|Do you want to trade?<*4>
 |-
 |0x74352
 |おめでとうございます!
@@ -2151,7 +2165,10 @@ This isn't... how I wanted....
 
 ちゅうせんで ひかるゲームボーイを
 プレゼント いたします!
-|
+|Congratulations!
+You've collected all 4 password letters!
+
+Write the password on the included postcard and send it to Imagineer to be entered in a draw for a glow-in-the-dark Game Boy!
 |-
 |0x74354
 |<&NAME>のメダルは
@@ -2259,27 +2276,27 @@ This isn't... how I wanted....
 |Attempted to clear status effects!<S3c><*4>
 |-
 | #######
-| colspan=2 | '''More Medal stuff                                     '''
+| colspan=2 | '''Medal trading stuff                                     '''
 |-
 |0x74380
 |<&NAME> は
 メダル「<&c705>」をてにいれた<*2>
-|
+|<&NAME> obtained the "<&c705>" Medal!<*2>
 |-
 |0x74382
 |<&NAME> は
 メダル「<&c705>」をとられた<*2>
-|
+|<&NAME>'s "<&c705>" Medal was taken!<*2>
 |-
 |0x74384
 |<&c705> は
 メダル「<&c6a2>」をてにいれた<*2>
-|
+|<&c705> obtained the "<&c6a2>" Medal!<*2>
 |-
 |0x74386
 |あっ! メダル「<&c705>」は
 メダル「<&c6a2>」にヘんかした<*2>
-|
+|Ah! The "<&c705>" Medal transformed into a "<&c6a2>" Medal!<*2>
 |-
 |0x74388
 |しかし メダル「<&c705>」は
@@ -2288,16 +2305,18 @@ This isn't... how I wanted....
 メダル「<&c705>」をもてなかった
 
 <*4>
-|
+|...But you already have that Medal!
+
+The "<&c705>" Medal wasn't taken.<*4>
 |-
 |0x7438a
 |そのかわリに
 ぜんじゅくれんどが 4アップした!!<*2>
-|
+|In exchange, all of its skills will be raised by 4!<*2>
 |-
 |0x7438c
 |くまれたメダロットがないとできません<S3c><*1>
-|
+|You need at least one battle-ready Medarot to use this mode.<S3c><*1>
 |-
 | #######
 | colspan=2 | '''Link feature explanation                                     '''
@@ -2321,7 +2340,14 @@ This isn't... how I wanted....
 しんけんしょうぶができるモードです
 
 <*4>
-|
+|Hello! This is where you can play together with your friends using a Game Link cable.
+Since this is your first time coming here, I'll explain link Robottles for you:
+
+--- Practice Robottle ---
+In this mode, you can battle against your friends without worrying about winning or losing parts.
+
+--- Official Robottle ---
+In this mode, you can battle your friends while putting your parts and Medals on the line!<*4>
 |-
 |0x74390
 |まけたほうは メダルおよびパーツを
@@ -2338,5 +2364,12 @@ This isn't... how I wanted....
 
 いじょう!!
 3つのモードが たのしめます!
-|
+|The loser of the battle will have one of their parts or Medals taken by the winner.
+For experienced players only!
+
+--- Trading Parts ---
+In this mode, you can trade spare parts with your friends.
+
+That ends the explanation!
+Have fun!
 |}
