@@ -366,7 +366,7 @@ elif mode == "tilemaps":
             compressed = compress_tmap(tilemap)
         else:
             compressed = None
-        sys.stderr.write("tmap {}: {} c:{}\n".format(hex(i), hex(len(tilemap)), hex(len(compressed)) if compressed else "N/A"))
+        #sys.stderr.write("tmap {}: {} c:{}\n".format(hex(i), hex(len(tilemap)), hex(len(compressed)) if compressed else "N/A"))
         if compressed and len(compressed) < len(tilemap)+2:
             data += compressed
         else:
