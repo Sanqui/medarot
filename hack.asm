@@ -455,6 +455,8 @@ LoadFontDialogueAdvice:
     call ResetVWF
     xor a
     ld [VWFCharset], a ; set japanese
+	xor a
+	ld [$c64e], a
     ret
 
 ;Char4FAdvice:

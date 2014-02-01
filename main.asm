@@ -233,8 +233,115 @@ LoadTilemap_: ; $e2c	ld a, $1e
 	jp $0eac
 ; 0xed9
 
+INCBIN "baserom.gbc", $ed9,$f84-$ed9
 
-INCBIN "baserom.gbc", $ed9,$1c87-$ed9
+LoadTilemapWindow ; f84
+	ld a, BANK(Tilemaps) ; was $1e
+	rst $10
+	push de
+	ld a, b
+	and $1f
+	ld b, a
+	ld a, c
+	and $1f
+	ld c, a
+	ld d, $0
+	ld e, c
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	sla e
+	rl d
+	ld hl, $9c00
+	ld c, b
+	ld b, $0
+	add hl, bc
+	add hl, de
+	pop de
+	push hl
+	ld hl, Tilemaps
+	ld d, $0
+	sla e
+	rl d
+	add hl, de
+	ld a, [hli]
+	ld d, [hl]
+	ld e, a
+	pop hl
+	ld b, h
+	ld c, l
+	ld a, [de]
+	cp $ff
+	jp z, $10d2
+	and $3
+	jr z, .asm_fd5 ; 0xfc9 $a
+	dec a
+	jr z, .asm_ffb ; 0xfcc $2d
+	dec a
+	jp z, $106f
+	jp $10a0
+.asm_fd5
+	inc de
+	ld a, [de]
+	cp $ff
+	jp z, $10d2
+	cp $fe
+	jr z, .asm_fec ; 0xfde $c
+	cp $fd
+	jr z, .asm_ff8 ; 0xfe2 $14
+	di
+	call $17cb
+	ld [hli], a
+	ei
+	jr .asm_fd5 ; 0xfea $e9
+.asm_fec
+	push de
+	ld de, $0020
+	ld h, b
+	ld l, c
+	add hl, de
+	ld b, h
+	ld c, l
+	pop de
+	jr .asm_fd5 ; 0xff6 $dd
+.asm_ff8
+	inc hl
+	jr .asm_fd5 ; 0xff9 $da
+.asm_ffb
+	inc de
+	ld a, [de]
+	cp $ff
+	jp z, $10d2
+	ld a, [de]
+	and $c0
+	cp $c0
+	jp z, $1057
+	cp $80
+	jp z, $103f
+	cp $40
+	jp z, $1028
+	push bc
+	ld a, [de]
+	inc a
+	ld b, a
+	inc de
+	ld a, [de]
+	di
+	call $17cb
+	ld [hli], a
+	ei
+	dec b
+	jp nz, $1018
+	pop bc
+	jp $0ffb
+; 0x1028
+
+INCBIN "baserom.gbc", $1028,$1c87-$1028
 
 SetupDialogue: ; $1c87
 	ld [$c5c7], a
@@ -1295,8 +1402,11 @@ INCBIN "baserom.gbc", $54000,$4000
 
 SECTION "bank16",DATA,BANK[$16]
 
-    INCBIN "baserom.gbc", $58000,$4000
-
+INCBIN "baserom.gbc", $58000,$5b041-$58000
+    ; tutorial
+    ld a, 2 ; LoadFont_
+    rst $8
+INCBIN "baserom.gbc", $5b044,$5c000-$5b044
 
 SECTION "bank17",DATA,BANK[$17]
 INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
