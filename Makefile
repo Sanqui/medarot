@@ -6,6 +6,7 @@ export LC_CTYPE=C
 all: medarot.gbc
 
 text/text: 
+	python textpre.py list 0x10 < text/medals.txt > text/medals.bin
 	python textpre.py list 0x10 < text/medarots.txt > text/medarots.bin
 	python textpre.py bank 0x4000 < text/Battles.mediawiki > text/Battles.bin
 	python textpre.py bank 0x4000 < text/Dialogue_1.mediawiki > text/Dialogue_1.bin

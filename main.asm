@@ -1018,15 +1018,44 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$35bc-$303b
+INCBIN "baserom.gbc", $303b,$32b9-$303b
 
-    ld a, $17
+LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
+	push af
+	ld a,Bank(MedalData)
+	ld [$2000],a
+	pop af
+	ld hl,MedalData
+	ld b,$00
+	ld c,a
+	sla c
+	sla c
+	sla c
+	sla c 
+	rl b ;Shifting b actually does nothing when you set it to 0, it's just filler code...
+	rl b
+	add hl, bc
+	ld de,$C6A2
+	ld b,$0F ;Increase max size to 16 bytes for names
+.asm_032d8
+	ldi a,hl
+	ld [de],a
+	inc de
+	dec b
+	jr nz,.asm_032d8
+	ret
+
+INCBIN "baserom.gbc", $32df,$35bc-$32df	
+
+	;35bc
+    ld a, $17 
 ;    ld [$2000], a
     rst $10
     nop
     nop
 
 INCBIN "baserom.gbc", $35c1,$4000-$35c1
+
 
 SECTION "bank1",DATA,BANK[$1]
 
@@ -1347,7 +1376,7 @@ DrawMedarotData:
 	ret
 ; 0x13756
 
-INCBIN "baserom.gbc", $13756,$14000 -$13756
+INCBIN "baserom.gbc", $13756,$14000-$13756
 
 SECTION "bank5",DATA,BANK[$5]
 INCBIN "baserom.gbc", $14000,$4000
@@ -1409,9 +1438,10 @@ INCBIN "baserom.gbc", $58000,$5b041-$58000
 INCBIN "baserom.gbc", $5b044,$5c000-$5b044
 
 SECTION "bank17",DATA,BANK[$17]
+
 INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
 
-MedarotNames:
+MedarotNames: ;$5ec36
     INCBIN "text/medarots.bin"
 
 INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
@@ -1576,7 +1606,10 @@ SECTION "bank28",DATA,BANK[$28]
 Tilemaps:
     INCBIN "tilemaps.bin"
 
-SECTION "bank29",DATA,BANK[$29]
+SECTION "bank29",DATA,BANK[$29] ;Use this bank for lists
+MedalData:
+	INCBIN "text/medals.bin"
+
 SECTION "bank2a",DATA,BANK[$2a]
 SECTION "bank2b",DATA,BANK[$2b]
 SECTION "bank2c",DATA,BANK[$2c]

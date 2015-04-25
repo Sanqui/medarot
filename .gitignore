@@ -1,0 +1,4 @@
+text/*.mediawiki
+text/*.bin
+*.gbc
+*.o
