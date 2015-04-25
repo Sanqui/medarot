@@ -638,10 +638,10 @@ INCBIN "baserom.gbc", $303b,$32b9-$303b
 
 LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	push af
-	ld a,Bank(MedalData)
+	ld a,$17
 	ld [$2000],a
 	pop af
-	ld hl,MedalData
+	ld hl,$5d50
 	ld b,$00
 	ld c,a
 	sla c
