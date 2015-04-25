@@ -1,0 +1,6 @@
+*.gbc
+*.o
+*.sgm
+text/
+*.sav
+*.bin
