@@ -634,7 +634,34 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$4000-$303b
+INCBIN "baserom.gbc", $303b,$32b9-$303b
+
+LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
+	push af
+	ld a,$17
+	ld [$2000],a
+	pop af
+	ld hl,$5d50
+	ld b,$00
+	ld c,a
+	sla c
+	sla c
+	sla c
+	sla c 
+	rl b ;Shifting b actually does nothing when you set it to 0, it's just filler code...
+	rl b
+	add hl, bc
+	ld de,$C6A2
+	ld b,$07 ;max size of medal name is n+1
+.asm_032d8
+	ldi a,hl
+	ld [de],a
+	inc de
+	dec b
+	jr nz,.asm_032d8
+	ret
+	
+INCBIN "baserom.gbc", $32df,$4000-$32df
 
 SECTION "bank1",DATA,BANK[$1]
 INCBIN "baserom.gbc", $4000,$4000
