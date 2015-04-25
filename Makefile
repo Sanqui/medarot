@@ -25,7 +25,7 @@ medarot.o: medarot.asm text text/text
 
 medarot.gbc: medarot.o
 	rgblink -o $@ $<
-	~/romhacking/rgbds/rgbfix -v -k 9C -l 0x33 -m 0x13 -p 0 -r 3 -t "MEDAROT KABUTO" $@
+	rgbfix -v -k 9C -l 0x33 -m 0x13 -p 0 -r 3 -t "MEDAROT KABUTO" $@
 
 clean:
 	rm -f medarot.o medarot.gbc text/medarots.bin text/battles.bin text/story1.bin text/text

@@ -58,7 +58,7 @@ NL = 0x4E
 NB = 0x4C
 
 def pack_string(string, table, ignore_vwf):
-    string = string.rstrip('\n').replace('\n\n', '␤')
+    string = string.rstrip('\n').replace('\n\n', '␤').replace('\r','')
     
     text_data = b""
     line_data = b""

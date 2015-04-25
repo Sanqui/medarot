@@ -1025,15 +1025,19 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	ld a,Bank(MedalData)
 	ld [$2000],a
 	pop af
-	ld hl,MedalData
+	ld hl, MedalData
 	ld b,$00
-	ld c,a
-	sla c
-	sla c
-	sla c
-	sla c 
-	rl b ;Shifting b actually does nothing when you set it to 0, it's just filler code...
-	rl b
+	ld c,a 
+	call GetListOffset ;6
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 	add hl, bc
 	ld de,$C6A2
 	ld b,$0F ;Increase max size to 16 bytes for names
@@ -1607,6 +1611,19 @@ Tilemaps:
     INCBIN "tilemaps.bin"
 
 SECTION "bank29",DATA,BANK[$29] ;Use this bank for lists
+
+GetListOffset: ;For LoadMedalData, 0x0C bytes
+	sla c
+	rl b
+	sla c
+	rl b
+	sla c
+	rl b
+	;Add one more to get 16 byte offsets
+	sla c
+	rl b
+	ret
+	
 MedalData:
 	INCBIN "text/medals.bin"
 

@@ -1,4 +1,8 @@
 text/*.mediawiki
 text/*.bin
+*.bin
 *.gbc
 *.o
+*.sav
+*.sgm
+text/text
