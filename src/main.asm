@@ -1058,8 +1058,30 @@ INCBIN "baserom.gbc", $32df,$35bc-$32df
     nop
     nop
 
-INCBIN "baserom.gbc", $35c1,$4000-$35c1
+INCBIN "baserom.gbc", $35c1,$35de-$35c1
 
+LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
+	ld a,$17
+	ld [$2000],a
+	ld hl,$6c36
+	ld b,$00
+	ld a,$04
+	call $3981
+	ld de,$c6a2
+	ldi a,hl
+	cp a,$50
+	jr z,.asm_35fa
+	ld [de],a
+	inc de
+	jp $35f0
+.asm_35fa
+	ld a,$50
+	ld [de],a
+	pop de
+	pop hl
+	ret
+
+INCBIN "baserom.gbc", $3600,$4000-$3600
 
 SECTION "bank1",DATA,BANK[$1]
 
