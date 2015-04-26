@@ -73,13 +73,10 @@ $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE)
 #Handle Lists
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE_LIST)
 	python preparation/textpre.py list 0x10 < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
-
 	
 #ROM object is dependent on all asm files, but they're all grouped into a single asm (e.g. medarot.asm)
 $(BUILD)/$(TARGET).o: $(wildcard $(SRC)/*.$(SOURCE_TYPE)) preparation
 	$(CC) $(CC_ARGS) -o $@ $(SRC)/$(TARGET).$(SOURCE_TYPE) 
-
-#TODO----
 
 $(TARGET_OUT): $(BUILD)/$(TARGET).o
 	$(LD) $(LD_ARGS) -o $@ $<

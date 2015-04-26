@@ -3,6 +3,8 @@ from io import open
 
 pages = "Dialogue_1 Dialogue_2 Dialogue_3 Battles Snippets".split()
 
+lists = "Attributes Skills Items Medals Medarotters Medarots Attacks Part".split()
+
 print("Getting pages from Medapedia...")
 
 for i, page in enumerate(pages):
@@ -24,4 +26,42 @@ for i, page in enumerate(pages):
         
     print("Getting pages... {}/{} ({:.4}%) done".format(i+1, len(pages), (float(i+1)/len(pages))*100))
 
+print("Getting list data from Medapedia...")
 
+rq = requests.get("http://medarot.meowcorp.us/wiki/User:Kimbles/Medarot_1_Hacking_Notes/Text/Lists?action=raw")
+assert rq.status_code == 200
+
+#== Name ==
+#comments
+#comments
+#{| class=wikitable width=300
+# - 
+# Japanese
+# English
+# -
+
+#We actually don't care about the japanese, we just want the english text in a line
+t = rq.text.split('\n==')
+
+for section in t:
+	#Get the file name
+	filename = section.split("\n")[0].replace("==","").replace(" ","").lower() + ".txt"
+	print("Writing to "+ filename)
+	f = open("text/"+filename, 'wb')
+	data = section.split("|-")
+	for item in data:
+		i = item.replace("\n","")
+		if i[0] != "|":
+			continue
+		j = i.split("|")
+		idx = j[1]
+		if idx != "}":
+			eng = j[3]
+			jp = j[2]
+			if len(eng) == 0:
+				f.write(idx+"\n")
+				#f.write(jp+"\n")
+			else:
+				f.write(eng+"\n")
+	f.close()		
+	

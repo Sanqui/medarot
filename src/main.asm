@@ -1604,7 +1604,7 @@ SECTION "bank28",DATA,BANK[$28]
 Snippet4:
     INCBIN "build/Snippet_4.bin"
 	
-SECTION "bank29",DATA,BANK[$29] ;Use this bank for lists
+SECTION "bank29",DATA,BANK[$29] 
 Snippet5:
     INCBIN "build/Snippet_5.bin"
 
@@ -1612,6 +1612,7 @@ SECTION "bank2a",DATA,BANK[$2a]
 Tilemaps:
     INCBIN "build/tilemaps.bin"
 
+;Use this bank for lists
 SECTION "bank2b",DATA,BANK[$2b]
 GetListOffset: ;For LoadMedalData, 0x0C bytes
 	sla c

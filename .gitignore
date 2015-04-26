@@ -1,5 +1,8 @@
 text/*.mediawiki
+text/*.txt
 *.gbc
 *.sav
 *.sgm
 build/
+*.sn1
+*.sna
