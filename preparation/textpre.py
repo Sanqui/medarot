@@ -28,7 +28,7 @@ specials['*'] = Special(0x4f, end=True)
 specials['`'] = Special(0x50, bts=0, end=True)
 
 
-with open('chars.tbl', encoding='utf-8') as f:
+with open('text/chars.tbl', encoding='utf-8') as f:
     for char in f.readlines():
         char = char.strip('\n')
         if not char.startswith("@"):
@@ -37,13 +37,13 @@ with open('chars.tbl', encoding='utf-8') as f:
         else:
             i = int(char[1:], 16)
     
-for line in open("extras/medarot1.tbl", encoding='utf-8').readlines():
+for line in open("text/extras/medarot1.tbl", encoding='utf-8').readlines():
     if line.strip():
         a, b = line.strip('\n').split("=", 1)
         tablejp[b.replace("\\n", '\n')] = int(a, 16)
 
 vwf_table = [0]*0x80
-with open('vwftable.asm') as f:
+with open('src/vwftable.asm') as f:
     for line in f.readlines():
         if line and not line.startswith(';'):
             for num in line.split(', '):
@@ -58,7 +58,7 @@ NL = 0x4E
 NB = 0x4C
 
 def pack_string(string, table, ignore_vwf):
-    string = string.rstrip('\n').replace('\n\n', '␤')
+    string = string.rstrip('\n').replace('\n\n', '␤').replace('\r','')
     
     text_data = b""
     line_data = b""
@@ -312,7 +312,7 @@ elif mode == "tilemaps":
     for i in range(0xf1): # XXX hardcoded
         tmap = b''
         #tmap = b"\x00"
-        with open('tilemaps/{:02x}.txt'.format(i), 'r', encoding='utf-8') as f:
+        with open('text/tilemaps/{:02x}.txt'.format(i), 'r', encoding='utf-8') as f:
             mode = f.readline().strip()
             escape = b""
             column = 0

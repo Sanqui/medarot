@@ -1018,15 +1018,70 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$35bc-$303b
+INCBIN "baserom.gbc", $303b,$32b9-$303b
 
-    ld a, $17
+LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
+	push af
+	ld a,Bank(MedalData)
+	ld [$2000],a
+	pop af
+	ld hl, MedalData
+	ld b,$00
+	ld c,a 
+	call GetListOffset ;6
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	add hl, bc
+	ld de,$C6A2
+	ld b,$0F ;Increase max size to 16 bytes for names
+.asm_032d8
+	ldi a,hl
+	ld [de],a
+	inc de
+	dec b
+	jr nz,.asm_032d8
+	ret
+
+INCBIN "baserom.gbc", $32df,$35bc-$32df	
+
+	;35bc
+    ld a, $17 
 ;    ld [$2000], a
     rst $10
     nop
     nop
 
-INCBIN "baserom.gbc", $35c1,$4000-$35c1
+INCBIN "baserom.gbc", $35c1,$35de-$35c1
+
+LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
+	ld a,$17
+	ld [$2000],a
+	ld hl,$6c36
+	ld b,$00
+	ld a,$04
+	call $3981
+	ld de,$c6a2
+	ldi a,hl
+	cp a,$50
+	jr z,.asm_35fa
+	ld [de],a
+	inc de
+	jp $35f0
+.asm_35fa
+	ld a,$50
+	ld [de],a
+	pop de
+	pop hl
+	ret
+
+INCBIN "baserom.gbc", $3600,$4000-$3600
 
 SECTION "bank1",DATA,BANK[$1]
 
@@ -1347,7 +1402,7 @@ DrawMedarotData:
 	ret
 ; 0x13756
 
-INCBIN "baserom.gbc", $13756,$14000 -$13756
+INCBIN "baserom.gbc", $13756,$14000-$13756
 
 SECTION "bank5",DATA,BANK[$5]
 INCBIN "baserom.gbc", $14000,$4000
@@ -1409,10 +1464,11 @@ INCBIN "baserom.gbc", $58000,$5b041-$58000
 INCBIN "baserom.gbc", $5b044,$5c000-$5b044
 
 SECTION "bank17",DATA,BANK[$17]
+
 INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
 
-MedarotNames:
-    INCBIN "text/medarots.bin"
+MedarotNames: ;$5ec36
+    INCBIN "build/medarots.bin"
 
 INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
 
@@ -1532,53 +1588,68 @@ INCBIN "baserom.gbc", $7c000,$4000
 SECTION "bank20",DATA,BANK[$20]
     
 StoryText1:
-    INCBIN "text/Dialogue_1.bin"
+    INCBIN "build/Dialogue_1.bin"
     
 SECTION "bank21",DATA,BANK[$21]
 
 BattleText:
-    INCBIN "text/Battles.bin"
+    INCBIN "build/Battles.bin"
 
 SECTION "bank22",DATA,BANK[$22]
     
 StoryText2:
-    INCBIN "text/Dialogue_2.bin"
+    INCBIN "build/Dialogue_2.bin"
 
 SECTION "bank23",DATA,BANK[$23]
     
 StoryText3:
-    INCBIN "text/Dialogue_3.bin"
+    INCBIN "build/Dialogue_3.bin"
 
 SECTION "bank24",DATA,BANK[$24]
 
-INCLUDE "hack.asm"
+INCLUDE "src/hack.asm"
 
+;Snippets don't need to be in banks of their own, but to make the Makefile easier to write...
 SECTION "bank25",DATA,BANK[$25]
-
 Snippet1:
-    INCBIN "text/Snippet_1.bin"
-Snippet2:
-    INCBIN "text/Snippet_2.bin"
+    INCBIN "build/Snippet_1.bin"
 
 SECTION "bank26",DATA,BANK[$26]
-
-Snippet3:
-    INCBIN "text/Snippet_3.bin"
-Snippet4:
-    INCBIN "text/Snippet_4.bin"
-
+Snippet2:
+    INCBIN "build/Snippet_2.bin"
+	
 SECTION "bank27",DATA,BANK[$27]
-
-Snippet5:
-    INCBIN "text/Snippet_5.bin"
+Snippet3:
+    INCBIN "build/Snippet_3.bin"
 
 SECTION "bank28",DATA,BANK[$28]
-Tilemaps:
-    INCBIN "tilemaps.bin"
+Snippet4:
+    INCBIN "build/Snippet_4.bin"
+	
+SECTION "bank29",DATA,BANK[$29] 
+Snippet5:
+    INCBIN "build/Snippet_5.bin"
 
-SECTION "bank29",DATA,BANK[$29]
 SECTION "bank2a",DATA,BANK[$2a]
+Tilemaps:
+    INCBIN "build/tilemaps.bin"
+
+;Use this bank for lists
 SECTION "bank2b",DATA,BANK[$2b]
+GetListOffset: ;For LoadMedalData, 0x0C bytes
+	sla c
+	rl b
+	sla c
+	rl b
+	sla c
+	rl b
+	;Add one more to get 16 byte offsets
+	sla c
+	rl b
+	ret
+	
+MedalData:
+	INCBIN "build/medals.bin"
 SECTION "bank2c",DATA,BANK[$2c]
 SECTION "bank2d",DATA,BANK[$2d]
 SECTION "bank2e",DATA,BANK[$2e]
