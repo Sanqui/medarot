@@ -1,8 +1,8 @@
 [OVERLAY]
 │                  │
-│ Win Rate    to   │
+│ Win rate       % │
 │                  │
-│ Parts       \x7a\x6d\x6f\x6b │
+│ Parts       /240 │
 │                  │
-│ Play time  \x6b\x6b\x7d\x6b\x6b │
+│ Play time  00:00 │
 └──────────────────┘

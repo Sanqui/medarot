@@ -4,9 +4,9 @@
 │         │        │            
 │         │  Head  │            
 │         │        │            
-│         │  R-arm │            
+│         │  R-Arm │            
 │         │        │            
-│         │  L-arm │            
+│         │  L-Arm │            
 │         │        │            
 │         │  Legs  │            
 │         │        │            
