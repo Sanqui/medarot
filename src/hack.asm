@@ -7,7 +7,7 @@ VWFFont:
 INCBIN "gfx/vwffont.1bpp"
 
 VWFTable:
-INCLUDE "vwftable.asm"
+INCLUDE "src/vwftable.asm"
 
 HackPredefTable:
     dw WriteCharAdvice ; 0

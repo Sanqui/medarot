@@ -1446,7 +1446,7 @@ SECTION "bank17",DATA,BANK[$17]
 INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
 
 MedarotNames: ;$5ec36
-    INCBIN "text/medarots.bin"
+    INCBIN "build/medarots.bin"
 
 INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
 
@@ -1566,52 +1566,53 @@ INCBIN "baserom.gbc", $7c000,$4000
 SECTION "bank20",DATA,BANK[$20]
     
 StoryText1:
-    INCBIN "text/Dialogue_1.bin"
+    INCBIN "build/Dialogue_1.bin"
     
 SECTION "bank21",DATA,BANK[$21]
 
 BattleText:
-    INCBIN "text/Battles.bin"
+    INCBIN "build/Battles.bin"
 
 SECTION "bank22",DATA,BANK[$22]
     
 StoryText2:
-    INCBIN "text/Dialogue_2.bin"
+    INCBIN "build/Dialogue_2.bin"
 
 SECTION "bank23",DATA,BANK[$23]
     
 StoryText3:
-    INCBIN "text/Dialogue_3.bin"
+    INCBIN "build/Dialogue_3.bin"
 
 SECTION "bank24",DATA,BANK[$24]
 
-INCLUDE "hack.asm"
+INCLUDE "src/hack.asm"
 
+;Snippets don't need to be in banks of their own, but to make the Makefile easier to write...
 SECTION "bank25",DATA,BANK[$25]
-
 Snippet1:
-    INCBIN "text/Snippet_1.bin"
-Snippet2:
-    INCBIN "text/Snippet_2.bin"
+    INCBIN "build/Snippet_1.bin"
 
 SECTION "bank26",DATA,BANK[$26]
-
-Snippet3:
-    INCBIN "text/Snippet_3.bin"
-Snippet4:
-    INCBIN "text/Snippet_4.bin"
-
+Snippet2:
+    INCBIN "build/Snippet_2.bin"
+	
 SECTION "bank27",DATA,BANK[$27]
-
-Snippet5:
-    INCBIN "text/Snippet_5.bin"
+Snippet3:
+    INCBIN "build/Snippet_3.bin"
 
 SECTION "bank28",DATA,BANK[$28]
-Tilemaps:
-    INCBIN "tilemaps.bin"
-
+Snippet4:
+    INCBIN "build/Snippet_4.bin"
+	
 SECTION "bank29",DATA,BANK[$29] ;Use this bank for lists
+Snippet5:
+    INCBIN "build/Snippet_5.bin"
 
+SECTION "bank2a",DATA,BANK[$2a]
+Tilemaps:
+    INCBIN "build/tilemaps.bin"
+
+SECTION "bank2b",DATA,BANK[$2b]
 GetListOffset: ;For LoadMedalData, 0x0C bytes
 	sla c
 	rl b
@@ -1625,10 +1626,7 @@ GetListOffset: ;For LoadMedalData, 0x0C bytes
 	ret
 	
 MedalData:
-	INCBIN "text/medals.bin"
-
-SECTION "bank2a",DATA,BANK[$2a]
-SECTION "bank2b",DATA,BANK[$2b]
+	INCBIN "build/medals.bin"
 SECTION "bank2c",DATA,BANK[$2c]
 SECTION "bank2d",DATA,BANK[$2d]
 SECTION "bank2e",DATA,BANK[$2e]
