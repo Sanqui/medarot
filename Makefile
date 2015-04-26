@@ -9,7 +9,7 @@ SOURCE_TYPE := asm
 #Resource names
 RSRC_TEXT := Battles Dialogue_1 Dialogue_2 Dialogue_3
 RSRC_SNIP := Snippet_1 Snippet_2 Snippet_3 Snippet_4 Snippet_5
-RSRC_LIST := medals medarots
+RSRC_LIST := attacks attributes items medarots medarotters partdescriptions skills medals medarots 
 
 #Type of downloaded text data (RSRC_*)
 TEXT_TYPE := mediawiki
@@ -72,7 +72,7 @@ $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE)
 
 #Handle Lists
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE_LIST)
-	python preparation/textpre.py list 0x10 < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
+	python preparation/textpre.py list < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
 	
 #ROM object is dependent on all asm files, but they're all grouped into a single asm (e.g. medarot.asm)
 $(BUILD)/$(TARGET).o: $(wildcard $(SRC)/*.$(SOURCE_TYPE)) preparation

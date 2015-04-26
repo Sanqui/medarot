@@ -1061,13 +1061,13 @@ INCBIN "baserom.gbc", $32df,$35bc-$32df
 INCBIN "baserom.gbc", $35c1,$35de-$35c1
 
 LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
-	ld a,$17
+	ld a,Bank(MedarotNames)
 	ld [$2000],a
-	ld hl,$6c36
+	ld hl,MedarotNames
 	ld b,$00
 	ld a,$04
 	call $3981
-	ld de,$c6a2
+	ld de,$c6a2 ;RAM
 	ldi a,hl
 	cp a,$50
 	jr z,.asm_35fa
@@ -1464,13 +1464,7 @@ INCBIN "baserom.gbc", $58000,$5b041-$58000
 INCBIN "baserom.gbc", $5b044,$5c000-$5b044
 
 SECTION "bank17",DATA,BANK[$17]
-
-INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
-
-MedarotNames: ;$5ec36
-    INCBIN "build/medarots.bin"
-
-INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
+INCBIN "baserom.gbc", $5c000,$4000
 
 SECTION "bank18",DATA,BANK[$18]
 INCBIN "baserom.gbc", $60000,$4000
@@ -1575,7 +1569,7 @@ INCBIN "baserom.gbc", $70000,$4000
 
 SECTION "bank1d",DATA,BANK[$1d]
 
-    INCBIN "baserom.gbc", $74000,$4000
+INCBIN "baserom.gbc", $74000,$4000
 
 SECTION "bank1e",DATA,BANK[$1e]
 INCBIN "baserom.gbc", $78000,$4000
@@ -1650,6 +1644,13 @@ GetListOffset: ;For LoadMedalData, 0x0C bytes
 	
 MedalData:
 	INCBIN "build/medals.bin"
+	
+MedarotNames:
+    INCBIN "build/medarots.bin"
+
+ItemData:
+	INCBIN "build/items.bin"
+	
 SECTION "bank2c",DATA,BANK[$2c]
 SECTION "bank2d",DATA,BANK[$2d]
 SECTION "bank2e",DATA,BANK[$2e]

@@ -5,7 +5,8 @@ import struct
 from io import open
 
 mode = sys.argv[1]
-pad = int(sys.argv[2], 16)
+if "list" not in mode:
+	pad = int(sys.argv[2], 16) #Ignored for list
 
 table = {}
 tablejp = {}
@@ -242,7 +243,13 @@ def compress_tmap(tmap):
 
 
 if mode == "list":
+    pad = 0
     for line in sys.stdin.readlines():
+        if pad == 0:
+            pad = int(line)
+            continue
+        if len(line) == 0: #Even if it isn't translated, the index or jp text should be shown
+            continue
         bts = b""
         for char in line.strip():
             bts += chr(table[char])

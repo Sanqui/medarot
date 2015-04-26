@@ -45,9 +45,11 @@ t = rq.text.split('\n==')
 
 for section in t:
 	#Get the file name
-	filename = section.split("\n")[0].replace("==","").replace(" ","").lower() + ".txt"
+	lines = section.split("\n")
+	filename = lines[0].replace("==","").replace(" ","").lower() + ".txt"
 	print("Writing to "+ filename)
 	f = open("text/"+filename, 'wb')
+	f.write(str(int(lines[1],16)) + "\n")
 	data = section.split("|-")
 	for item in data:
 		i = item.replace("\n","")
