@@ -573,7 +573,55 @@ LoadFont:
     ret
 ;2d8b
 
-INCBIN "baserom.gbc", $2d8b,$2fcf-$2d8b
+INCBIN "baserom.gbc", $2d8b,$2e58-$2d8b
+
+LoadMedarotterData: ;Load Medarotter Names 2e58 to 2eaf
+    ld a, $17
+    ld [$2000], a
+    ld a, [$c753]
+    ld hl, $64e6
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [hl]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    ld a, $14
+    ld [$2000], a
+    ld hl, $4000
+    add hl, bc
+    ld de, $9110
+    ld bc, $0100
+    call $0cb7
+    ld a, [$c740]
+    inc a
+    ld [$c740], a
+    xor a
+    ld [$c741], a
+    ret 
+;2eb0	
+INCBIN "baserom.gbc", $2eb0,$2fcf-$2eb0
 
 PutString: ; 2fcf
 	ld a, h
@@ -634,8 +682,35 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$32b9-$303b
+INCBIN "baserom.gbc", $303b,$328f-$303b
 
+LoadItemData: ;328f to 32b8, 0x29 bytes
+	push af
+	ld a,$17
+	ld [$2000],a
+	pop af
+	ld hl,$5ae0
+	ld b,$00
+	ld c,a
+	sla c
+	rl b
+	sla c
+	rl b
+	sla c 
+	rl b
+	sla c
+	rl b
+	add hl, bc
+	ld de,$C6A2
+	ld b,$09
+.asm_032b2
+	ldi a,hl
+	ld [de],a
+	inc de
+	dec b
+	jr nz,.asm_032b2
+	ret
+	
 LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	push af
 	ld a,$17
