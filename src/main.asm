@@ -1064,23 +1064,27 @@ INCBIN "baserom.gbc", $303b,$328f-$303b
 
 LoadItemData: ;328f to 32b8, 0x29 bytes
 	push af
-	ld a,$17
+	ld a,BANK(ItemData)
 	ld [$2000],a
 	pop af
-	ld hl,$5ae0
+	dec a
+	ld hl,ItemData
 	ld b,$00
 	ld c,a
+	call GetListOffset ;6
 	sla c
 	rl b
-	sla c
-	rl b
-	sla c 
-	rl b
-	sla c
-	rl b
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
 	add hl, bc
 	ld de,$C6A2
-	ld b,$09
+	ld b,$19
 .asm_032b2
 	ldi a,hl
 	ld [de],a
@@ -1699,15 +1703,14 @@ Tilemaps:
 
 ;Use this bank for lists
 SECTION "bank2b",DATA,BANK[$2b]
-GetListOffset: ;For LoadMedalData, 0x0C bytes
-	sla c
+GetListOffset: ;For most list offsets
+	sla c ;2 byte offset
 	rl b
-	sla c
+	sla c ;4 byte offset
 	rl b
-	sla c
+	sla c ;8 byte offset
 	rl b
-	;Add one more to get 16 byte offsets
-	sla c
+	sla c ;16 byte offset
 	rl b
 	ret
 	
