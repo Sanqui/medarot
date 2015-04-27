@@ -736,9 +736,112 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	jr nz,.asm_032d8
 	ret
 	
-INCBIN "baserom.gbc",$32df,$35de-$32df
+INCBIN "baserom.gbc",$32df,$34f0-$32df
 
-LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
+;TODO: Find out what these unknowns are
+;34f0
+unk1: ;Unknown, pulled out since it accesses the same RAM bank as other text
+    ld [$c64e], a
+    ld a, $1c
+    ld [$2000], a
+    ld a, b
+    or a
+    jp nz, $352d
+    ld hl, $3562
+    ld b, $0
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [$c64e]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    add hl, bc
+    ld de, $c6a2
+    ld b, $9
+.asm_3526
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_3526 ; 0x352a $fa
+    ret
+; 0x352d
+unk2:
+    ld hl, $3562
+    ld b, $0
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [$c64e]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    add hl, bc
+    ld b, $0
+    ld c, $9
+    add hl, bc
+    ld de, $c6a2
+    ld b, $7
+.asm_355b
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_355b ; 0x355f $fa
+    ret
+; 0x3562
+
+INCBIN "baserom.gbc",$3562,$35bb-$3562
+
+unk3: ;35bb
+    push af
+    ld a, $17
+    ld [$2000], a
+    pop af
+    ld hl, $6879
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld b, $9
+    ld de, $c64e
+.asm_35d5
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_35d5 ; 0x35d9 $fa
+    ret
+; 0x35dc
+
+LoadMedarotNameData: ;35dc to 35ff, 0x21 bytes
+	push hl
+	push de
 	ld a,$17
 	ld [$2000],a
 	ld hl,$6c36
