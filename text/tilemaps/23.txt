@@ -7,9 +7,9 @@
 \x7a        ‾
 \x7a        ‾
 \x7a        ‾
-\x7a ランク    ‾
-\x7a  ゛     ‾
-\x7a レヘル    ‾
+\x7aRank    ‾
+\x7a        ‾
+\x7aLevel   ‾
 ♥\x4e\x4e\x4e\x4e\x4e\x4e\x4e\x4e\x4f
 \x7a        ‾
 \x7a        ‾
