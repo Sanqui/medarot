@@ -1,19 +1,19 @@
 [OVERLAY]
 \x77\x78\x78\x78\x78\x78\x78\x78\x78\x79
-\x7a ゛      ‾
-\x7aなくる     ‾
-\x7a゛       ‾
-\x7aかむしゃら   ‾
 \x7a        ‾
-\x7aうつ      ‾
+\x7aStrik   ‾
 \x7a        ‾
-\x7aねらいうち   ‾
+\x7aBrsrk   ‾
 \x7a        ‾
-\x7aおうえん    ‾
+\x7aShoot   ‾
 \x7a        ‾
-\x7aまもる     ‾
+\x7aSnipe   ‾
 \x7a        ‾
-\x7aなおす     ‾
+\x7aSuppt   ‾
 \x7a        ‾
-\x7aそのほか    ‾
+\x7aPrtct   ‾
+\x7a        ‾
+\x7aHeal    ‾
+\x7a        ‾
+\x7aOther   ‾
 円\x7d\x7d\x7d\x7d\x7d\x7d\x7d\x7d\x7e
