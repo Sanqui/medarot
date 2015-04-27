@@ -1,10 +1,10 @@
 [OVERLAY]
-そうこう 
+Armr 
      
-せいこう 
+Hit  
      
-いリょく 
-゛    
-しゅうてん
+Power
      
-ねつリょう
+Chrge
+     
+Cldwn
