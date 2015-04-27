@@ -1,12 +1,12 @@
 [OVERLAY]
-そうこう 
+Armr 
      
-すいしん 
- ゛   
-きとう  
+Speed
      
-かくとう 
-  ゛  
-しゃけき 
+Mobil
      
-さくてき 
+Fight
+     
+Shoot
+     
+Scan 
