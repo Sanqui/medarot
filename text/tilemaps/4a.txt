@@ -1,7 +1,7 @@
 [OVERLAY]
 ┌──────────────────┐
 │                  │
-│Start - begin     │
+│ Start: Begin     │
 │                  │
-│A button - status │
+│ A: View status   │
 └──────────────────┘
