@@ -927,14 +927,56 @@ INCBIN "baserom.gbc", $2d8b,$2dba-$2d8b
 
 INCBIN "baserom.gbc", $2dbf,$2e58-$2dbf
 
-; 
+LoadMedarotterData: ;Load Medarotter Names 2e58 to 2eaf
     ld a, $17
-;    ld [$2000], a
     rst $10
     nop
     nop
+    ld a, [$c753]
+    ld hl, $64e6
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [hl]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    ld a, $14
+    ld [$2000], a
+    ld hl, $4000
+    add hl, bc
+    ld de, $9110
+    ld bc, $0100
+    call $0cb7
+    ld a, [$c740]
+    inc a
+    ld [$c740], a
+    xor a
+    ld [$c741], a
+    ret 
+;2eb0	
 
-INCBIN "baserom.gbc", $2e5d,$2f43-$2e5d
+INCBIN "baserom.gbc", $2eb0,$2f43-$2eb0
 
     ld a, $17
 ;    ld [$2000], a
@@ -1018,8 +1060,39 @@ PutString: ; 2fcf
 	jp .char
 ; 0x303b
 
-INCBIN "baserom.gbc", $303b,$32b9-$303b
+INCBIN "baserom.gbc", $303b,$328f-$303b
 
+LoadItemData: ;328f to 32b8, 0x29 bytes
+	push af
+	ld a,BANK(ItemData)
+	ld [$2000],a
+	pop af
+	dec a
+	ld hl,ItemData
+	ld b,$00
+	ld c,a
+	call GetListOffset ;6
+	sla c
+	rl b
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	add hl, bc
+	ld de,$C6A2
+	ld b,$19
+.asm_032b2
+	ldi a,hl
+	ld [de],a
+	inc de
+	dec b
+	jr nz,.asm_032b2
+	ret
+	
 LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	push af
 	ld a,Bank(MedalData)
@@ -1061,13 +1134,13 @@ INCBIN "baserom.gbc", $32df,$35bc-$32df
 INCBIN "baserom.gbc", $35c1,$35de-$35c1
 
 LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
-	ld a,$17
+	ld a,Bank(MedarotNames)
 	ld [$2000],a
-	ld hl,$6c36
+	ld hl,MedarotNames
 	ld b,$00
 	ld a,$04
 	call $3981
-	ld de,$c6a2
+	ld de,$c6a2 ;RAM
 	ldi a,hl
 	cp a,$50
 	jr z,.asm_35fa
@@ -1464,13 +1537,7 @@ INCBIN "baserom.gbc", $58000,$5b041-$58000
 INCBIN "baserom.gbc", $5b044,$5c000-$5b044
 
 SECTION "bank17",DATA,BANK[$17]
-
-INCBIN "baserom.gbc", $5c000,$5ec36-$5c000
-
-MedarotNames: ;$5ec36
-    INCBIN "build/medarots.bin"
-
-INCBIN "baserom.gbc", $5ec36+(16*60),$60000-($5ec36+(16*60))
+INCBIN "baserom.gbc", $5c000,$4000
 
 SECTION "bank18",DATA,BANK[$18]
 INCBIN "baserom.gbc", $60000,$4000
@@ -1575,7 +1642,7 @@ INCBIN "baserom.gbc", $70000,$4000
 
 SECTION "bank1d",DATA,BANK[$1d]
 
-    INCBIN "baserom.gbc", $74000,$4000
+INCBIN "baserom.gbc", $74000,$4000
 
 SECTION "bank1e",DATA,BANK[$1e]
 INCBIN "baserom.gbc", $78000,$4000
@@ -1636,20 +1703,26 @@ Tilemaps:
 
 ;Use this bank for lists
 SECTION "bank2b",DATA,BANK[$2b]
-GetListOffset: ;For LoadMedalData, 0x0C bytes
-	sla c
+GetListOffset: ;For most list offsets
+	sla c ;2 byte offset
 	rl b
-	sla c
+	sla c ;4 byte offset
 	rl b
-	sla c
+	sla c ;8 byte offset
 	rl b
-	;Add one more to get 16 byte offsets
-	sla c
+	sla c ;16 byte offset
 	rl b
 	ret
 	
 MedalData:
 	INCBIN "build/medals.bin"
+	
+MedarotNames:
+    INCBIN "build/medarots.bin"
+
+ItemData:
+	INCBIN "build/items.bin"
+	
 SECTION "bank2c",DATA,BANK[$2c]
 SECTION "bank2d",DATA,BANK[$2d]
 SECTION "bank2e",DATA,BANK[$2e]

@@ -6,3 +6,4 @@ text/*.txt
 build/
 *.sn1
 *.sna
+*.o
