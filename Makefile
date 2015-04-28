@@ -62,7 +62,7 @@ download: $(TEXT)
 preparation: $(BUILD) $(TEXT) $(SNIPPETS_OBJ) $(LISTS_OBJ) $(STORYTEXT_OBJ) $(BUILD)/tilemaps.bin
 
 #Build tilemaps
-$(BUILD)/tilemaps.bin: $(wildcard $(TEXT)/tilemaps/*.txt)
+$(BUILD)/tilemaps.bin: $(wildcard $(TEXT)/tilemaps/*.txt) $(SRC)/vwftable.asm $(TEXT)/chars.tbl
 	python preparation/textpre.py tilemaps 0x4000 > $(BUILD)/tilemaps.bin
 
 #Handle snippets and dialog
