@@ -1067,13 +1067,13 @@ LoadItemData: ;328f to 32b8, 0x29 bytes
 	ld a,BANK(ItemData)
 	ld [$2000],a
 	pop af
+	dec a
 	ld hl,ItemData
 	ld b,$00
 	ld c,a
 	call GetListOffset ;6
 	sla c
 	rl b
-	nop
 	nop
 	nop
 	nop
