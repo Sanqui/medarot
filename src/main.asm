@@ -1067,7 +1067,6 @@ LoadItemData: ;328f to 32b8, 0x29 bytes
 	ld a,BANK(ItemData)
 	ld [$2000],a
 	pop af
-	dec a
 	ld hl,ItemData
 	ld b,$00
 	ld c,a
@@ -1082,8 +1081,9 @@ LoadItemData: ;328f to 32b8, 0x29 bytes
 	nop
 	nop
 	nop
+	nop
 	add hl, bc
-	ld de,$C6A2
+	ld de,ListText ;Originally c6a2
 	ld b,$19
 .asm_032b2
 	ldi a,hl
@@ -1320,7 +1320,7 @@ LoadAndDrawItemData: ;8bdc
 	push hl
 	push bc
 	call $01e3 ;LoadItemData
-	ld hl, $c6a2
+	ld hl, ListText ;originally c6a2
 	ld a, [$c644]
 	ld b, a
 	ld a, [$c645]

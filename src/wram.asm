@@ -44,3 +44,9 @@ VWFBuildArea2:
     ds 8
 VWFBuildArea3:
     ds 8
+
+ListText:
+	ds 8
+	ds 8
+	ds 8
+	ds 8
