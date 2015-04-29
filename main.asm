@@ -963,7 +963,27 @@ LoadAndDrawItemData: ;8bdc
 	ret
 ; 0x8c75
 
-INCBIN "baserom.gbc",$8c75,$c000-$8c75
+INCBIN "baserom.gbc",$8c75,$aefb-$8c75
+
+LoadAndDrawMedalData:
+	ld hl, $a640
+	ld c, b
+	ld b, $0
+	ld a, $5
+	call $02b8
+	ld a, $40
+	ld hl, $988a
+	call $585a
+	ld hl, $0001
+	add hl, de
+	ld a, [hl]
+	call $0282 ;LoadMedalData
+	ld hl, $c6a2
+	ld bc, $98ac
+	call $0264
+	ret
+
+INCBIN "baserom.gbc",$af20,$c000-$af20
 
 SECTION "bank3",DATA,BANK[$3]
 INCBIN "baserom.gbc", $c000,$4000
