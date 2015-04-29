@@ -1122,18 +1122,115 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	jr nz,.asm_032d8
 	ret
 
-INCBIN "baserom.gbc", $32df,$35bc-$32df	
+INCBIN "baserom.gbc", $32df,$34f0-$32df	
 
-	;35bc
-    ld a, $17 
+;TODO: Find out what these unknowns are
+;34f0
+unk_034f0: ;Unknown, pulled out since it accesses the same RAM bank as other text
+    ld [$c64e], a
+    ld a, $1c
+    ld [$2000], a
+    ld a, b
+    or a
+    jp nz, $352d
+    ld hl, $3562
+    ld b, $0
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [$c64e]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    add hl, bc
+    ld de, $c6a2
+    ld b, $9
+.asm_3526
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_3526 ; 0x352a $fa
+    ret
+; 0x352d
+unk_0352d:
+    ld hl, $3562
+    ld b, $0
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld a, [$c64e]
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    sla c
+    rl b
+    add hl, bc
+    ld b, $0
+    ld c, $9
+    add hl, bc
+    ld de, $c6a2
+    ld b, $7
+.asm_355b
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_355b ; 0x355f $fa
+    ret
+; 0x3562
+
+INCBIN "baserom.gbc",$3562,$35bb-$3562
+
+unk_035bb: ;35bb
+    push af
+    ld a, $17 ;Something to do with font (Sanky?)
 ;    ld [$2000], a
     rst $10
     nop
     nop
+    pop af
+    ld hl, $6879
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    ld b, $9
+    ld de, $c64e
+.asm_35d5
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_35d5 ; 0x35d9 $fa
+    ret
+; 0x35dc
 
-INCBIN "baserom.gbc", $35c1,$35de-$35c1
-
-LoadMedarotNameData: ;35de to 35ff, 0x21 bytes
+LoadMedarotNameData: ;35dc to 35ff, 0x23 bytes
+	push hl
+	push de
 	ld a,Bank(MedarotNames)
 	ld [$2000],a
 	ld hl,MedarotNames
@@ -1189,14 +1286,110 @@ INCBIN "baserom.gbc", $8000,$8038-$8000
     nop
     ld a, 2 ; LoadFont_
     rst $8
+;803d
 
 INCBIN "baserom.gbc", $803d,$8b71-$803d
 
 ; when returning to menu from items
     ld a, 2 ; LoadFont_
     rst $8
+;8b74
+INCBIN "baserom.gbc", $8b74,$8bdc-$8b74
 
-INCBIN "baserom.gbc", $8b74,$9482-$8b74
+LoadAndDrawItemData: ;8bdc
+	ld hl, $aa00
+	dec a
+	ld b, $0
+	ld c, a
+	sla c
+	rl b
+	add hl, bc
+	add hl, bc
+	add hl, bc
+	add hl, bc
+	add hl, bc
+	ld a, $98
+	ld [$c644], a
+	ld a, $62
+	ld [$c645], a
+	ld b, $5
+.asm_8bf8
+	ld a, [hli]
+	or a
+	ret z
+	push hl
+	push bc
+	call $01e3 ;LoadItemData
+	ld hl, $c6a2
+	ld a, [$c644]
+	ld b, a
+	ld a, [$c645]
+	ld c, a
+	call $0264
+	ld a, [$c644]
+	ld h, a
+	ld a, [$c645]
+	ld l, a
+	ld bc, $0040
+	add hl, bc
+	ld a, h
+	ld [$c644], a
+	ld a, l
+	ld [$c645], a
+	pop bc
+	pop hl
+	ld a, [hl]
+	and $80
+	jp z, $4c70
+	ld a, [hl]
+	and $7f
+	ld [$c64e], a
+	push hl
+	push bc
+	ld d, $0
+	ld e, b
+	sla e
+	rl d
+	ld hl, $4c75
+	add hl, de
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	ld a, $77
+	di
+	call $016e
+	ld [hli], a
+	ei
+	ld a, [$c64e]
+	push hl
+	call $025b
+	pop hl
+	ld a, [$c64f]
+	and $f0
+	swap a
+	ld b, $6b
+	add b
+	di
+	call $016e
+	ld [hli], a
+	ei
+	ld a, [$c64f]
+	and $f
+	ld b, $6b
+	add b
+	di
+	call $016e
+	ld [hli], a
+	ei
+	pop bc
+	pop hl
+	inc hl
+	dec b
+	jr nz, .asm_8bf8 ; 0x8c72 $84
+	ret
+; 0x8c75
+
+INCBIN "baserom.gbc",$8c75,$9482-$8c75
 
 ; on medal screen and parts screen
     nop
@@ -1227,7 +1420,6 @@ INCBIN "baserom.gbc", $9c87,$a90b-$9c87
     rst $8
 
 INCBIN "baserom.gbc", $a910,$c000-$a910
-
 
 SECTION "bank3",DATA,BANK[$3]
 INCBIN "baserom.gbc", $c000,$4000
