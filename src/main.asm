@@ -1112,7 +1112,7 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	nop
 	nop
 	add hl, bc
-	ld de,$C6A2
+	ld de,ListText ;New location for longer list buffer, originally c6a2
 	ld b,$0F ;Increase max size to 16 bytes for names
 .asm_032d8
 	ldi a,hl
@@ -1418,8 +1418,28 @@ INCBIN "baserom.gbc", $9c87,$a90b-$9c87
     nop
     ld a, 3 ; LoadFont2
     rst $8
+;a910
+INCBIN "baserom.gbc",$a910,$aefb-$a910
 
-INCBIN "baserom.gbc", $a910,$c000-$a910
+LoadAndDrawMedalData:
+	ld hl, $a640
+	ld c, b
+	ld b, $0
+	ld a, $5
+	call $02b8
+	ld a, $40
+	ld hl, $988a
+	call $585a
+	ld hl, $0001
+	add hl, de
+	ld a, [hl]
+	call $0282 ;LoadMedalData
+	ld hl, ListText ;Originally c6a2
+	ld bc, $98ac
+	call $0264
+	ret
+;af20
+INCBIN "baserom.gbc",$af20,$c000-$af20
 
 SECTION "bank3",DATA,BANK[$3]
 INCBIN "baserom.gbc", $c000,$4000
@@ -1785,8 +1805,8 @@ StatsScreen: ; 6ec7e
 	ld hl, $0081
 	add hl, de
 	ld a, [hl]
-	call $0282
-	ld hl, $c6a2
+	call $0282 ;LoadMedalData
+	ld hl, ListText ;Originally c6a2
 	ld bc, $98ac
 	call $0264
 	pop de

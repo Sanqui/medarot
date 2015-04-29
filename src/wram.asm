@@ -45,7 +45,7 @@ VWFBuildArea2:
 VWFBuildArea3:
     ds 8
 
-ListText:
+ListText: ;dfd1
 	ds 8
 	ds 8
 	ds 8
