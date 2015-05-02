@@ -15,7 +15,7 @@
 │                  │            
 │──────────────────│            
 │Press             │            
-│ select to switch!│            
+│ select to switch\x76│            
 └──────────────────┘            
                                 
                                 
