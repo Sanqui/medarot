@@ -1237,7 +1237,7 @@ LoadMedarotNameData: ;35dc to 35ff, 0x23 bytes
 	ld b,$00
 	ld a,$04
 	call $3981
-	ld de,$c6a2 ;RAM
+	ld de,ListText ;RAM
 	ldi a,hl
 	cp a,$50
 	jr z,.asm_35fa
@@ -1544,14 +1544,14 @@ SetUpMedarotData: ; 1120c 4:520c
 	ld a, [hl]
 	and $7f
 	ld c, a
-	call $02be
+	call $02be ;LoadMedarotNameData
 	push de
 	ld b, $10 ; MEDAROT NAME LENGTH
 	ld hl, -$0010;$0002
 	add hl, de
 	ld d, h
 	ld e, l
-	ld hl, $c6a2
+	ld hl, ListText ;Originally c6a2
 .asm_112cb
 	ld a, [hli]
 	ld [de], a
