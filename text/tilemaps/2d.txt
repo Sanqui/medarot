@@ -2,7 +2,7 @@
 │                  │
 │ Win rate       % │
 │                  │
-│ Parts       /240 │
+│ Parts       \x7a\x6d\x6f\x6b │
 │                  │
-│ Play time  00:00 │
+│ Play time  \x6b\x6b\x7d\x6b\x6b │
 └──────────────────┘
