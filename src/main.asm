@@ -984,7 +984,32 @@ INCBIN "baserom.gbc", $2eb0,$2f43-$2eb0
     nop
     nop
 
-INCBIN "baserom.gbc", $2f48,$2fcf-$2f48
+INCBIN "baserom.gbc", $2f48,$2faa-$2f48
+    ld a, $17
+    ld [$2000], a
+    ld a, [$c753]
+    ld hl, $64e6
+    ld b, $0
+    ld c, a
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hli]
+    ld h, [hl]
+    ld l, a
+    inc hl
+    inc hl
+    inc hl
+    ld de, $c6a2
+    ld b, $9
+.asm_2fc8
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_2fc8 ; 0x2fcc $fa
+    ret
+; 0x2fcf
 
 PutString: ; 2fcf
     ld a, $1 ; 2 ; PutStringAdvice
@@ -1655,7 +1680,72 @@ SetUpMedarotData: ; 1120c 4:520c
 	ret
 ; 0x11326
 
-INCBIN "baserom.gbc", $11326,$132ea -$11326
+INCBIN "baserom.gbc", $11326,$11514-$11326
+
+;04:5514, 0x11514
+    add hl, bc
+    ld a, [hl]
+    and $7f
+    ld b, $0
+    ld c, $0
+    call $0294
+    ld hl, $c6a2
+    call $028e
+    ld hl, $99c6
+    ld b, $0
+    ld c, a
+    add hl, bc
+    ld b, h
+    ld c, l
+    ld hl, $c6a2
+    call $0264
+    ret
+; 0x11535
+
+INCBIN "baserom.gbc", $11535,$1154b-$11535
+
+        ld hl, $000e
+        add hl, de
+        ld a, [hl]
+        and $7f
+        ld hl, $b5a0
+        ld c, a
+        ld b, $0
+        sla c
+        rl b
+        add hl, bc
+        ld a, [hl]
+        and $7f
+        ld b, $0
+        ld c, $1
+        call $0294
+        ld hl, $c6a2
+        ld bc, $9a0b
+        call $0264
+        ret
+; 0x11571
+
+INCBIN "baserom.gbc", $11571,$11598-$11571
+        add hl, bc
+        ld a, [hl]
+        and $7f
+        ld b, $0
+        ld c, $2
+        call $0294
+        ld hl, $c6a2
+        call $546f
+        ld hl, $9a01
+        ld b, $0
+        ld c, a
+        add hl, bc
+        ld b, h
+        ld c, l
+        ld hl, $c6a2
+        call $0264
+        ret
+; 0x115b9
+
+INCBIN "baserom.gbc", $115b9,$132ea-$115b9
 
 ; entering battle selecting medarot
     ld a, 3 ; LoadFont2
