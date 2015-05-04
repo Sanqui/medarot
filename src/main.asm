@@ -1125,8 +1125,7 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 INCBIN "baserom.gbc", $32df,$34f0-$32df	
 
 ;TODO: Find out what these unknowns are
-;34f0
-unk_034f0: ;Unknown, pulled out since it accesses the same RAM bank as other text
+unk_0034f0:  ;0:34f0, 0x034f0 seems to load data into RAM for the setup screen to use
     ld [$c64e], a
     ld a, $1c
     ld [$2000], a
@@ -1163,7 +1162,7 @@ unk_034f0: ;Unknown, pulled out since it accesses the same RAM bank as other tex
     jr nz, .asm_3526 ; 0x352a $fa
     ret
 ; 0x352d
-unk_0352d:
+unk_00352d:
     ld hl, $3562
     ld b, $0
     sla c
@@ -1200,7 +1199,7 @@ unk_0352d:
 
 INCBIN "baserom.gbc",$3562,$35bb-$3562
 
-unk_035bb: ;35bb
+unk_0035bb: ;35bb
     push af
     ld a, $17 ;Something to do with font (Sanky?)
 ;    ld [$2000], a
@@ -1847,7 +1846,63 @@ StatsScreen: ; 6ec7e
 	ret
 ; 0x6ed0e
 
-INCBIN "baserom.gbc", $6ed0e,$70000-$6ed0e
+INCBIN "baserom.gbc", $6ed0e,$6ed3e-$6ed0e
+
+SetupScreen_GetHeadData: ;1b:6d3e,0x6ed3e
+    ld a, [$a03d]
+    and $7f
+    ld b, $0
+    ld c, $0
+    call $0294
+    ld hl, $c6a2
+    ld bc, $9949
+    call $0264
+    ret
+; 0x6ed54
+
+INCBIN "baserom.gbc", $6ed54,$6ed66-$6ed54
+
+SetupScreen_GetRArmData: ;1b:6d66, 0x6ed66
+    ld a, [$a03f]
+    and $7f
+    ld b, $0
+    ld c, $1
+    call $0294
+    ld hl, $c6a2
+    ld bc, $9989
+    call $0264
+    ret
+; 0x6ed7c
+
+INCBIN "baserom.gbc", $6ed7c,$6ed8e-$6ed7c
+
+SetupScreen_GetLArmData: ;1b:6d8e, 0x6ed8e
+    ld a, [$a041]
+    and $7f
+    ld b, $0
+    ld c, $2
+    call $0294
+    ld hl, $c6a2
+    ld bc, $99c9
+    call $0264
+    ret
+; 0x6eda4
+
+INCBIN "baserom.gbc", $6eda4,$6edb6-$6eda4
+
+SetupScreen_GetLegsData: ;1b:6db6, 0x6edb6
+    ld a, [$a043]
+    and $7f
+    ld b, $0
+    ld c, $3
+    call $0294
+    ld hl, $c6a2
+    ld bc, $9a09
+    call $0264
+    ret
+; 0x6edcc
+
+INCBIN "baserom.gbc", $6edcc,$70000-$6edcc
 
 SECTION "bank1c",DATA,BANK[$1c]
 INCBIN "baserom.gbc", $70000,$4000
