@@ -1152,7 +1152,7 @@ unk_0034f0:  ;0:34f0, 0x034f0 seems to load data into RAM for the setup screen t
     sla c
     rl b
     add hl, bc
-    ld de, $c6a2
+    ld de, ListText
     ld b, $9
 .asm_3526
     ld a, [hli]
@@ -1186,7 +1186,7 @@ unk_00352d:
     ld b, $0
     ld c, $9
     add hl, bc
-    ld de, $c6a2
+    ld de, ListText
     ld b, $7
 .asm_355b
     ld a, [hli]
@@ -1824,7 +1824,7 @@ StatsScreen: ; 6ec7e
 	ld a, $8
 	call $02b8
 	push de
-	ld hl, -$0010;$0002
+	ld hl, $0002
 	add hl, de
 	push hl
 	call $028e
@@ -1901,7 +1901,7 @@ SetupScreen_GetHeadData: ;1b:6d3e,0x6ed3e
     ld b, $0
     ld c, $0
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     ld bc, $9949
     call $0264
     ret
@@ -1915,7 +1915,7 @@ SetupScreen_GetRArmData: ;1b:6d66, 0x6ed66
     ld b, $0
     ld c, $1
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     ld bc, $9989
     call $0264
     ret
@@ -1929,7 +1929,7 @@ SetupScreen_GetLArmData: ;1b:6d8e, 0x6ed8e
     ld b, $0
     ld c, $2
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     ld bc, $99c9
     call $0264
     ret
@@ -1943,7 +1943,7 @@ SetupScreen_GetLegsData: ;1b:6db6, 0x6edb6
     ld b, $0
     ld c, $3
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     ld bc, $9a09
     call $0264
     ret
