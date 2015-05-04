@@ -497,12 +497,13 @@ IncTextOffsetAndResetVWF:
     call ResetVWF
     ret
 	
-SelectNameOffset: ;If it's AF00, ld hl,-$0010
+SelectNameOffset: ;If it's <= AF00, ld hl,$0002
 	ld a,d
-	cp a,$AF
-	jr z,.asm_SNO_1
-	ld hl,$0002
+	;cp a,$AC
+	sub $AF
+	jr c,.asm_SNO_1
+	ld hl,-$0010
 	ret
 .asm_SNO_1:
-	ld hl,-$0010
+	ld hl,$0002
 	ret
