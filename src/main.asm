@@ -1450,7 +1450,54 @@ INCBIN "baserom.gbc", $10000,$10637-$10000
     ld a, 4 ; dec a n load font 2
     rst $8
 
-INCBIN "baserom.gbc", $1063a,$1120c-$1063a
+INCBIN "baserom.gbc", $1063a,$10d8f-$1063a
+
+SetupData_LoadRAM: ;04:4d8f, Loads names into RAM + more?
+    ld c, $a
+    ld a, [de]
+    ld b, a
+    ld a, [$c64e]
+    cp b
+    jp nz, $4ddb
+    ld hl, $a500
+    ld b, $0
+    ld a, [$c654]
+    ld c, a
+    ld a, $5
+    call $02b8
+    push de
+    ld hl, $ac00
+    ld b, $0
+    ld a, [$c652]
+    ld c, a
+    ld a, $8
+    call $02b8
+    pop de
+    ld b, $20
+    push hl
+.asm_10dbb
+    ld a, [de]
+    ld [hli], a
+    inc de
+    dec b
+    jr nz, .asm_10dbb ; 0x10dbf $fa
+    ld a, [$c652]
+    inc a
+    ld [$c652], a
+    pop hl
+    ld d, h
+    ld e, l
+    ld hl, $0011
+    add hl, de
+    ld a, [$c650]
+    ld [hl], a
+    ld a, [$c650]
+    inc a
+    ld [$c650], a
+    ret
+; 0x10ddb
+
+INCBIN "baserom.gbc", $10ddb,$1120c-$10ddb
 
 SetUpMedarotData: ; 1120c 4:520c
 	ld a, [$c753]
