@@ -1689,7 +1689,7 @@ INCBIN "baserom.gbc", $11326,$11514-$11326
     ld b, $0
     ld c, $0
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     call $028e
     ld hl, $99c6
     ld b, $0
@@ -1697,32 +1697,32 @@ INCBIN "baserom.gbc", $11326,$11514-$11326
     add hl, bc
     ld b, h
     ld c, l
-    ld hl, $c6a2
+    ld hl, ListText
     call $0264
     ret
 ; 0x11535
 
 INCBIN "baserom.gbc", $11535,$1154b-$11535
 
-        ld hl, $000e
-        add hl, de
-        ld a, [hl]
-        and $7f
-        ld hl, $b5a0
-        ld c, a
-        ld b, $0
-        sla c
-        rl b
-        add hl, bc
-        ld a, [hl]
-        and $7f
-        ld b, $0
-        ld c, $1
-        call $0294
-        ld hl, $c6a2
-        ld bc, $9a0b
-        call $0264
-        ret
+    ld hl, $000e
+    add hl, de
+    ld a, [hl]
+    and $7f
+    ld hl, $b5a0
+    ld c, a
+    ld b, $0
+    sla c
+    rl b
+    add hl, bc
+    ld a, [hl]
+    and $7f
+    ld b, $0
+    ld c, $1
+    call $0294
+    ld hl, ListText
+    ld bc, $9a0b
+    call $0264
+    ret
 ; 0x11571
 
 INCBIN "baserom.gbc", $11571,$11598-$11571
@@ -1732,7 +1732,7 @@ INCBIN "baserom.gbc", $11571,$11598-$11571
         ld b, $0
         ld c, $2
         call $0294
-        ld hl, $c6a2
+        ld hl, ListText
         call $546f
         ld hl, $9a01
         ld b, $0
@@ -1740,7 +1740,7 @@ INCBIN "baserom.gbc", $11571,$11598-$11571
         add hl, bc
         ld b, h
         ld c, l
-        ld hl, $c6a2
+        ld hl, ListText
         call $0264
         ret
 ; 0x115b9
@@ -1830,10 +1830,12 @@ INCBIN "baserom.gbc", $14000,$158b5-$14000
 
 unk_0558B5: ;05:58b5, 0x158b5, pulls name text during attacks
 	push de
-    ld hl, $0002
-    add hl, de
-    ld de, $c6a2
-    ld b, $9
+    ;ld hl, $0002 ;TODO: When we have a better disassembly, just have this information stored in a special RAM location
+    ld a,$c 
+	rst $8 ;Use 0002 for ac00 and -0010 for af00
+	add hl, de
+    ld de, ListText
+    ld b, $10
 .asm_158bf
     ld a, [hli]
     ld [de], a
@@ -1860,9 +1862,9 @@ unk_0558c7: ;05:58c7, 0x158c7
     ld c, a
     pop af
     call $0294
-    ld hl, $c6a2
+    ld hl, ListText
     ld de, $c705
-    ld b, $9
+    ld b, $10
 .asm_158ec
     ld a, [hli]
     ld [de], a

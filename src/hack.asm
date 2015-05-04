@@ -23,6 +23,7 @@ HackPredefTable:
     dw IncTextOffset ; 9
     dw ZeroTextOffset ; $a
     dw IncTextOffsetAndResetVWF ; $b
+	dw SelectNameOffset ; $c
 
 HackPredef:
     ; save hl
@@ -495,3 +496,13 @@ IncTextOffsetAndResetVWF:
     call IncTextOffset
     call ResetVWF
     ret
+	
+SelectNameOffset: ;If it's AF00, ld hl,-$0010
+	ld a,d
+	cp a,$AF
+	jr z,.asm_SNO_1
+	ld hl,$0002
+	ret
+.asm_SNO_1:
+	ld hl,-$0010
+	ret
