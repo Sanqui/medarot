@@ -1736,8 +1736,79 @@ DrawMedarotData:
 INCBIN "baserom.gbc", $13756,$14000-$13756
 
 SECTION "bank5",DATA,BANK[$5]
-INCBIN "baserom.gbc", $14000,$4000
+INCBIN "baserom.gbc", $14000,$158b5-$14000
 
+unk_0558B5: ;05:58b5, 0x158b5, pulls name text during attacks
+	push de
+    ld hl, $0002
+    add hl, de
+    ld de, $c6a2
+    ld b, $9
+.asm_158bf
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_158bf ; 0x158c3 $fa
+    pop de
+    ret
+; 0x158c7
+unk_0558c7: ;05:58c7, 0x158c7
+    push de
+    ld [$c650], a
+    ld hl, $000d
+    add hl, de
+    ld b, $0
+    ld a, [$c650]
+    ld c, a
+    add hl, bc
+    ld a, [hl]
+    and $7f
+    push af
+    ld b, $0
+    ld a, [$c650]
+    ld c, a
+    pop af
+    call $0294
+    ld hl, $c6a2
+    ld de, $c705
+    ld b, $9
+.asm_158ec
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_158ec ; 0x158f0 $fa
+    pop de
+    ret
+; 0x158f4
+unk_0558f4: ;05:58f4, 0x158f4
+    push de
+    ld [$c650], a
+    ld hl, $002f
+    add hl, de
+    ld a, [hl]
+    and $7f
+    push af
+    ld b, $0
+    ld a, [$c650]
+    ld c, a
+    pop af
+    call $0294
+    ld hl, $c6a2
+    ld de, $c70e
+    ld b, $9
+.asm_15912
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_15912 ; 0x15916 $fa
+    pop de
+    ret
+; 0x1591a
+INCBIN "baserom.gbc", $1591a,$18000-$1591a
+	
 SECTION "bank6",DATA,BANK[$6]
 INCBIN "baserom.gbc", $18000,$4000
 
