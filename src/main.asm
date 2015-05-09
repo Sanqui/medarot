@@ -1987,7 +1987,9 @@ StatsScreen: ; 6ec7e
 	ld a, $8
 	call $02b8
 	push de
-	ld hl, $0002
+    ;ld hl, $0002 ;TODO: When we have a better disassembly, just have this information stored in a special RAM location
+    ld a,$c 
+	rst $8 ;Use 0002 for ac00 and -0010 for af00
 	add hl, de
 	push hl
 	call $028e
