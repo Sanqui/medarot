@@ -67,3 +67,46 @@ for section in t:
 				f.write(eng+"\n")
 	f.close()		
 	
+print("Getting part data from Medapedia...")
+
+rq = requests.get("http://medarot.meowcorp.us/wiki/User:Kimbles/Medarot_1_Hacking_Notes/Text/Part_names?action=raw")
+assert rq.status_code == 200
+
+#== Name ==
+#comments
+#comments
+#{| class=wikitable width=300
+# - 
+# Japanese
+# English
+# Model
+# -
+
+t = rq.text.split('\n==')[1:] #Ignore the top comments
+
+for section in t:
+	#Get the file name
+	lines = section.split("\n")
+	filename = lines[0].replace("==","").replace(" ","").lower() + ".txt"
+	print("Writing to "+ filename)
+	f = open("text/"+filename, 'wb')
+	f.write("16\n") #Max these out at size 16
+	data = section.split("|-")
+	for item in data:
+		i = item.replace("\n","")
+		if i[0] != "|":
+			continue
+		j = i.split("|")
+		idx = j[1]
+		if idx != "}":
+			eng = j[3]
+			jp = j[2]
+			part = j[4]
+			if len(eng) == 0:
+				f.write(idx+"\n")
+				#f.write(jp+"\n")
+			else:
+				f.write(eng+"\n")
+				f.write(part+"\n")
+	f.close()	
+	
