@@ -8,7 +8,7 @@ lists = "Attributes Skills Items Medals Medarotters Medarots Attacks Part".split
 print("Getting pages from Medapedia...")
 
 for i, page in enumerate(pages):
-    rq = requests.get("http://medarot.meowcorp.us/wiki/User:Kimbles/Medarot_1_Hacking_Notes/Text/{}?action=raw".format(page))
+    rq = requests.get("http://medarot.meowcorp.us/wiki/Medapedia:Medarot_1_Translation_Project/Text/{}?action=raw".format(page))
     assert rq.status_code == 200
     if page != "Snippets":
         open("text/{}.mediawiki".format(page), 'w', encoding='utf-8').write(rq.text)
@@ -28,7 +28,7 @@ for i, page in enumerate(pages):
 
 print("Getting list data from Medapedia...")
 
-rq = requests.get("http://medarot.meowcorp.us/wiki/User:Kimbles/Medarot_1_Hacking_Notes/Text/Lists?action=raw")
+rq = requests.get("http://medarot.meowcorp.us/wiki/Medapedia:Medarot_1_Translation_Project/Text/Lists?action=raw")
 assert rq.status_code == 200
 
 #== Name ==
