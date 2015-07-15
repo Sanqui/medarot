@@ -1,6 +1,6 @@
 ﻿[OVERLAY]
 │                  │
-│ Win Rate    to   │
+│ Win rate       % │
 │                  │
 │ Parts       \x7a\x6d\x6f\x6b │
 │                  │

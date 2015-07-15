@@ -1,7 +1,7 @@
 [OVERLAY]
 ┌──────────────────┐
 │                  │
-│L/R: Change page  │
+│L\x7aR\x7d Change page  │
 │                  │
-│Select: Rearrange │
+│Select\x7d Rearrange │
 └──────────────────┘

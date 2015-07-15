@@ -7,7 +7,7 @@
                                 
 ┌──────────────────┐            
 │                  │            
-│Clear all data?   │            
+│Clear all data\x75   │            
 │                  │            
 │          Yes  No │            
 └──────────────────┘            
