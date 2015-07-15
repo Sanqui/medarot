@@ -1,7 +1,7 @@
 [OVERLAY]
 ┌──────────────────┐
 │                  │
-│ Start: Begin     │
+│ Start\x7d Begin     │
 │                  │
-│ A: View status   │
+│ A\x7d View status   │
 └──────────────────┘

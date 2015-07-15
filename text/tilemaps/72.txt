@@ -1,7 +1,7 @@
 [OVERLAY]
 ┌──────────────────┐
 │                  │
-│L/R: Change page  │
+│L\x7aR\x7d Change page  │
 │                  │
-│Select: Part type │
+│Select\x7d Part type │
 └──────────────────┘
