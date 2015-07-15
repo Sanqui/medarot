@@ -791,7 +791,7 @@ unk_0034f0:  ;0:34f0, 0x034f0 seems to load data into RAM for the setup screen t
     sla c
     rl b
     add hl, bc
-    ld de, $c6a2
+    ld de, $c6a2 ;Part names are loaded here
     ld b, $9
 .asm_3526
     ld a, [hli]
