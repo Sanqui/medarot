@@ -5,6 +5,7 @@ export LC_CTYPE=C
 TARGET := medarot
 TARGET_TYPE := gbc
 SOURCE_TYPE := asm
+PYTHON := python
 
 #Resource names
 RSRC_TEXT := Battles Dialogue_1 Dialogue_2 Dialogue_3
@@ -56,23 +57,22 @@ auto: download $(TARGET_OUT)
 
 #Download files
 download: $(TEXT) 
-	python preparation/get_text.py
+	$(PYTHON) preparation/get_text.py
 
 #Generate Binary files (tilemaps, text, lists, etc...)
 preparation: $(BUILD) $(TEXT) $(SNIPPETS_OBJ) $(LISTS_OBJ) $(STORYTEXT_OBJ) $(BUILD)/tilemaps.bin
 
 #Build tilemaps
 $(BUILD)/tilemaps.bin: $(wildcard $(TEXT)/tilemaps/*.txt) $(SRC)/vwftable.asm $(TEXT)/chars.tbl
-	python preparation/textpre.py tilemaps 0x4000 > $(BUILD)/tilemaps.bin
+	$(PYTHON) preparation/textpre.py tilemaps 0x4000 > $(BUILD)/tilemaps.bin
 
 #Handle snippets and dialog
-#TODO: Handle snippets and dialog separately somehow so we don't need to waste so much space in the ROM for snippets
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE)
-	python preparation/textpre.py bank 0x4000 < $(TEXT)/$(*F).$(TEXT_TYPE) > $(BUILD)/$(*F).$(BIN_TYPE)
+	$(PYTHON) preparation/textpre.py bank 0x4000 < $(TEXT)/$(*F).$(TEXT_TYPE) > $(BUILD)/$(*F).$(BIN_TYPE)
 
 #Handle Lists
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE_LIST)
-	python preparation/textpre.py list < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
+	$(PYTHON) preparation/textpre.py list < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
 	
 #ROM object is dependent on all asm files, but they're all grouped into a single asm (e.g. medarot.asm)
 $(BUILD)/$(TARGET).o: $(wildcard $(SRC)/*.$(SOURCE_TYPE)) preparation $(wildcard $(BUILD)/*.$(BIN_TYPE))

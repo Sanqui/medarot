@@ -57,9 +57,9 @@ for section in t:
 			continue
 		j = i.split("|")
 		idx = j[1]
-		if idx != "}":
-			eng = j[4]
-			jp = j[3]
+		if idx[0] != '}':
+			eng = j[3]
+			jp = j[2]
 			if len(eng) == 0:
 				f.write(idx+"\n")
 				#f.write(jp+"\n")

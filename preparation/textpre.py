@@ -271,8 +271,8 @@ elif mode == "bank":
     rows = mediawiki.split("|-")
     for row in rows:
         cols = row.split("\n|")[1:]
-        if len(cols) == 3:
-            pointers[int(cols[0], 16)] = (cols[1].rstrip(), cols[2].rstrip())
+        if len(cols) == 4:
+            pointers[int(cols[0], 16)] = (cols[2].rstrip(), cols[3].rstrip())
     
     pts_data = b""
     text_data = b""
