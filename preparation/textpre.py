@@ -289,12 +289,13 @@ elif mode == "bank":
     text_data = b""
     
     offsets = {}
+
+    free_space = pad-2*len(pointers)
     
-    max_size = (pad-(2*len(pointers)))/total_ptr #Enforce a max size for each string, including leaving enough space for all the pointers
+    max_size = free_space/total_ptr #Enforce a max size for each unique string    
     additional_file_ptr = 0x4000;
     file = open(additional_file, 'wb')
-    free_space = pad-len(pointers)*2
-
+        
     assert max_size > 4, "Maximum possible size of text below 5, need to find another solution"
 
     #Super lazy copy paste, this can be made wayyyy more efficient but as of the time of writing this, it's not worth the effort! 
@@ -315,12 +316,18 @@ elif mode == "bank":
             
             text_data_tmp += pack_string(string, table if len(eng) else tablejp, not len(eng))
             l = len(text_data_tmp)
-            if(l < max_size):
-                free_space -= l
-            else:
+            
+            if(l > max_size):
                 free_space -= max_size
-
+            else:
+                free_space -= l
+                
+    
     assert free_space >= 0, "Free space less than 0"
+
+    sys.stderr.write("Unique Strings: " + str(total_ptr) + "\n")
+    sys.stderr.write("Free Space: " + str(free_space) + "\n")
+    sys.stderr.write("Max Size: " + str(max_size) + "\n")
                 
     #for pointer in sorted(pointers.keys()):
     for pointer in sorted(pointers.keys()):
@@ -347,12 +354,11 @@ elif mode == "bank":
                 #string = jap
             
             text_data_tmp += pack_string(string, table if len(eng) else tablejp, not len(eng))
+            l = len(text_data_tmp)            
             
-            l = len(text_data_tmp)
             if(l > max_size + free_space):
                 tmp_new = b""
                 tmp = text_data_tmp[0:max_size+free_space-5]
-                sys.stderr.write(hex(len(tmp)) + " " + hex(free_space) + " -> ")
                 j = ord(tmp[-1])
                 if(j == 0x4a\
                 or j == 0x4c\
@@ -367,22 +373,22 @@ elif mode == "bank":
                     tmp = tmp[0:max_size+free_space-5+idx].ljust(max_size+free_space-1, b'\x00')   
                 tmp_new += text_data_tmp[max_size+free_space-5:] + b'\x50'
                 s = struct.pack(b"<BBHB", 0x4B, additional_file_bank, additional_file_ptr, 0x50)
-                tmp += s
-                sys.stderr.write(hex(len(tmp)) + " " + hex(free_space) + "\n")                 
+                tmp += s              
                 text_data_tmp = tmp
                 file.write(tmp_new)
                 additional_file_ptr += len(tmp_new)
                 free_space = 0 #If we enter this part, it means there's no free space left to use
             elif (l > max_size):
                 free_space -= (l-max_size)
-        #sys.stderr.write(hex(free_space) + "\n")        
+    
         text_data += text_data_tmp
         pts_data += pts_data_tmp
                       
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?
-    
+
     print data
+
     if(file.tell() < pad):
         file.seek(pad-1)
         file.write(b'\x00')
