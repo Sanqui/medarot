@@ -429,11 +429,9 @@ PutChar: ; $1cc9
 	ld l, a
 	push hl
 	ld a, [$c6c0]
-	
 	ld a, $8
 	rst $8 ; GetTextOffset
-	;ld b, $0
-	;ld c, a
+ProcessText: ;1d18
 	add hl, bc
 	ld a, [hl]
 	cp $4f
@@ -449,7 +447,7 @@ PutChar: ; $1cc9
 	cp $4a
 	jp z, Char4AAdvice
 	jp WriteChar
-
+	
 TextTableBanks: ; 0x1d3b
     db BANK(Snippet1)
     db BANK(Snippet2)
@@ -706,28 +704,28 @@ Char4C: ; 0x1e62
 Char4B: ; 0x1ed6
 ; call subtext
 	inc hl
+	ld a, [hli] ; bank
+	push af
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
+	
+	ld a, $d
+	rst $8 ;Char4BAdvice
+	
 	ld a, [$c6c5]
 	ld c, a
 	ld b, $0
 	add hl, bc
 	ld a, [hl]
 	cp $50
-	jr nz, .asm_1f04 ; 0x1ee4 $1e
-	
+	jr nz, .asm_1f04 ; 0x1ee4 $1e	
 	ld a, $9
 	rst $8 ; IncTextOffset
 	ld a, $9
 	rst $8 ; IncTextOffset
 	ld a, $9
 	rst $8 ; IncTextOffset
-	;ld a, [$c6c0]
-	;inc a
-	;inc a
-	;inc a
-	;ld [$c6c0], a
 	xor a
 	ld [$c6c5], a
 	ld a, [$c6c4]
@@ -763,7 +761,7 @@ Char4B: ; 0x1ed6
 	;call $17cb
 	;ld [hl], a
 	;ei
-	db 0, 0, 0, 0, 0, 0
+	db 0
 	pop hl
 	ld a, [hl]
 	ld d, a
@@ -2203,13 +2201,21 @@ ItemData:
 	INCBIN "build/items.bin"
 	
 SECTION "bank2c",DATA,BANK[$2c]
+	INCBIN "build/Dialogue_1_Additional.bin" 
 SECTION "bank2d",DATA,BANK[$2d]
+	INCBIN "build/Dialogue_2_Additional.bin"
 SECTION "bank2e",DATA,BANK[$2e]
+	INCBIN "build/Dialogue_3_Additional.bin"
 SECTION "bank2f",DATA,BANK[$2f]
+	INCBIN "build/Snippet_1_Additional.bin"
 SECTION "bank30",DATA,BANK[$30]
+	INCBIN "build/Snippet_2_Additional.bin"
 SECTION "bank31",DATA,BANK[$31]
+	INCBIN "build/Snippet_3_Additional.bin"
 SECTION "bank32",DATA,BANK[$32]
+	INCBIN "build/Snippet_4_Additional.bin"
 SECTION "bank33",DATA,BANK[$33]
+	INCBIN "build/Snippet_5_Additional.bin"
 SECTION "bank34",DATA,BANK[$34]
 SECTION "bank35",DATA,BANK[$35]
 SECTION "bank36",DATA,BANK[$36]

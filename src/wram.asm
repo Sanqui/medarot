@@ -50,3 +50,11 @@ ListText: ;dfd1
 	ds 8
 	ds 8
 	ds 8
+
+Char1BSavedBank: ;dff1
+	ds 1
+Char1BSavedAddr: ;dff2 (Little Endian)
+Char1BSavedAddrLower:
+	ds 1
+Char1BSavedAddrUpper:
+	ds 1

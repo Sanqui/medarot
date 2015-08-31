@@ -24,6 +24,7 @@ HackPredefTable:
     dw ZeroTextOffset ; $a
     dw IncTextOffsetAndResetVWF ; $b
 	dw SelectNameOffset ; $c
+	dw Char4BAdvice ;d
 
 HackPredef:
     ; save hl
@@ -507,3 +508,14 @@ SelectNameOffset: ;If it's <= AF00, ld hl,$0002
 .asm_SNO_1:
 	ld hl,$0002
 	ret
+	
+Char4BAdvice:
+	pop af
+	cp $0
+	jr z, .Char4BAdviceEnd
+	rst $10
+	ld a,$0
+	ld [$c6c5],a
+.Char4BAdviceEnd
+	ret
+	

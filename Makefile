@@ -68,7 +68,7 @@ $(BUILD)/tilemaps.bin: $(wildcard $(TEXT)/tilemaps/*.txt) $(SRC)/vwftable.asm $(
 
 #Handle snippets and dialog
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE)
-	$(PYTHON) preparation/textpre.py bank 0x4000 < $(TEXT)/$(*F).$(TEXT_TYPE) > $(BUILD)/$(*F).$(BIN_TYPE)
+	$(PYTHON) preparation/textpre.py bank 0x4000 $(BUILD)/$(*F)_Additional.$(BIN_TYPE) < $(TEXT)/$(*F).$(TEXT_TYPE) > $(BUILD)/$(*F).$(BIN_TYPE)
 
 #Handle Lists
 $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE_LIST)

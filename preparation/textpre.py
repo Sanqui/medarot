@@ -7,6 +7,14 @@ from io import open
 mode = sys.argv[1]
 if "list" not in mode:
 	pad = int(sys.argv[2], 16) #Ignored for list
+    
+if mode == "bank":
+    additional_file = sys.argv[3]
+    g = sys.argv[3].split("_")
+    if(len(g) > 2):
+        additional_file_bank = int(g[1], 10) + 0x2b
+        if(g[0] == "Snippets"):
+            additional_file_bank += 3
 
 table = {}
 tablejp = {}
@@ -23,7 +31,7 @@ class Special():
         self.names = names if names else {}
 
 specials = {}
-specials["&"] = Special(0x4b, bts=2, names={0xC923: "NAME"})
+specials["&"] = Special(0x4b, bts=3, names={0x00C923: "NAME"})
 specials['S'] = Special(0x4d, default=2)
 specials['*'] = Special(0x4f, end=True)
 specials['`'] = Special(0x50, bts=0, end=True)
@@ -109,12 +117,13 @@ def pack_string(string, table, ignore_vwf):
                             val = value
                             matched = True
                     
-                    if not matched: val = int(val, 16)
+                    if not matched:
+                        val = int(val, 16)
                     
                     if val == "": val = s.default
                     
                     if s.bts:
-                        fmt = b"<"+(b"", b"B", b"H")[s.bts]
+                        fmt = b"<"+(b"", b"B", b"H", b"xH")[s.bts]
                         word_data += struct.pack(fmt, val)
                     
                     if s.end: ended = True
@@ -273,46 +282,105 @@ elif mode == "bank":
         cols = row.split("\n|")[1:]
         if len(cols) == 4:
             pointers[int(cols[0], 16)] = (cols[2].rstrip(), cols[3].rstrip())
-    
     pts_data = b""
     text_data = b""
     
     offsets = {}
     
-    for pointer in sorted(pointers.keys()):
-            
+    max_size = (pad-(2*len(pointers)))/len(pointers) #Enforce a max size for each string, including leaving enough space for all the pointers
+    additional_file_ptr = 0x4000;
+    file = open(additional_file, 'wb')
+    free_space = pad-(2*len(pointers))
+    
+    assert max_size > 3, "Maximum possible size of text below 4, need to find another solution"
+
+    #Super lazy copy paste, this can be made wayyyy more efficient but as of the time of writing this, it's not worth the effort! 
+    for pointer in sorted(pointers.keys()):   
         jap, eng = pointers[pointer]
-        if eng.startswith("="):
-            #jap, eng = pointers[int(eng.lstrip('='), 16)]
-            pts_data += struct.pack(b"<H", offsets[int(eng.lstrip('='), 16)])
-            
-        else:
-            offset = 0x4000+len(pointers)*2+len(text_data)
-            offsets[pointer] = offset
-            pts_data += struct.pack(b"<H", offset)
-            
-            
+        pts_data_tmp = b""
+        text_data_tmp = b""
+		
+        if not eng.startswith("="):            
             if len(eng):
-                text_data += b"\x49" # set english
+                text_data_tmp += b"\x49" # set english
                 string = eng
             else:
-                text_data += b"\x49" # set english
+                text_data_tmp += b"\x49" # set english
                 string = "/0x{:x}/".format(pointer)
                 eng = string
                 #text_data += b"\x48" # set japanese
                 #string = jap
             
-            #sys.stderr.write(string)
-            #sys.stderr.write(string[2])
+            text_data_tmp += pack_string(string, table if len(eng) else tablejp, not len(eng))
+            l = len(text_data_tmp)
+            if(l < max_size):
+                free_space -= l
+            else:
+                free_space -= max_size
+
+                
+    for pointer in sorted(pointers.keys()):
+        jap, eng = pointers[pointer]
+        pts_data_tmp = b""
+        text_data_tmp = b""
+		      
+        offset = 0x4000+len(pointers)*2+len(text_data)
+        offsets[pointer] = offset
+        pts_data_tmp += struct.pack(b"<H", offset)
+        
+        if eng.startswith("="):
+            #jap, eng = pointers[int(eng.lstrip('='), 16)]
+            pts_data_tmp += struct.pack(b"<H", offsets[int(eng.lstrip('='), 16)])
+        else:            
+            if len(eng):
+                text_data_tmp += b"\x49" # set english
+                string = eng
+            else:
+                text_data_tmp += b"\x49" # set english
+                string = "/0x{:x}/".format(pointer)
+                eng = string
+                #text_data += b"\x48" # set japanese
+                #string = jap
             
-            text_data += pack_string(string, table if len(eng) else tablejp, not len(eng))
-    
+            text_data_tmp += pack_string(string, table if len(eng) else tablejp, not len(eng))
+            
+            l = len(text_data_tmp)
+            if(l > max_size + free_space):
+                tmp_new = b""
+                tmp = text_data_tmp[0:max_size-4+free_space]
+                j = ord(tmp[-1])
+                if(j == 0x4a\
+                or j == 0x4c\
+                or j == 0x4d\
+                or j == 0x4e\
+                or j == 0x4f):
+                    tmp_new += tmp[-1]
+                    tmp = tmp[0:max_size+free_space-1] + b'\x00'
+                elif(b'\x4b' in tmp[-3:]):
+                    idx = tmp[-3:].index(b'\x4b')
+                    tmp_new += tmp[-3+idx:]
+                    tmp = tmp[0:max_size+free_space-3+idx].ljust(max_size+free_space-1, b'\x00')
+                tmp_new += text_data_tmp[max_size+free_space-4:]
+                s = struct.pack(b"<BBH", 0x4B, additional_file_bank, additional_file_ptr)
+                tmp += s
+                text_data_tmp = tmp
+                file.write(tmp_new)
+                additional_file_ptr += len(tmp_new)
+                free_space = 0 #If we enter this part, it means there's no free space left to use
+            elif (l > max_size):
+                free_space -= l-max_size
+
+            text_data += text_data_tmp
+            pts_data += pts_data_tmp
+                      
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?
     
-    assert len(data) <= pad, "Data size exceeds pad value: "+ hex(len(data))+" > "+hex(pad)
-    
     print data
+    if(file.tell() < pad):
+        file.seek(pad-1)
+        file.write(b'\x00')
+    file.close()
     
 elif mode == "tilemaps":
     tmaps = []
