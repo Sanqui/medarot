@@ -274,7 +274,7 @@ if mode == "list":
 
 elif mode == "bank":
     pointers = {}
-    
+    total_ptr = 0 #Total unique strings
     mediawiki = sys.stdin.read().decode('utf-8')
     mediawiki = mediawiki[mediawiki.find("{|"):]
     rows = mediawiki.split("|-")
@@ -282,22 +282,24 @@ elif mode == "bank":
         cols = row.split("\n|")[1:]
         if len(cols) == 4:
             pointers[int(cols[0], 16)] = (cols[2].rstrip(), cols[3].rstrip())
+            if(not pointers[int(cols[0], 16)][1].startswith("=")):
+                total_ptr += 1
+            
     pts_data = b""
     text_data = b""
     
     offsets = {}
     
-    max_size = (pad-(2*len(pointers)))/len(pointers) #Enforce a max size for each string, including leaving enough space for all the pointers
+    max_size = (pad-(2*len(pointers)))/total_ptr #Enforce a max size for each string, including leaving enough space for all the pointers
     additional_file_ptr = 0x4000;
     file = open(additional_file, 'wb')
-    free_space = pad-(2*len(pointers))
-    
-    assert max_size > 3, "Maximum possible size of text below 4, need to find another solution"
+    free_space = pad-len(pointers)*2
+
+    assert max_size > 4, "Maximum possible size of text below 5, need to find another solution"
 
     #Super lazy copy paste, this can be made wayyyy more efficient but as of the time of writing this, it's not worth the effort! 
     for pointer in sorted(pointers.keys()):   
         jap, eng = pointers[pointer]
-        pts_data_tmp = b""
         text_data_tmp = b""
 		
         if not eng.startswith("="):            
@@ -318,20 +320,22 @@ elif mode == "bank":
             else:
                 free_space -= max_size
 
+    assert free_space >= 0, "Free space less than 0"
                 
+    #for pointer in sorted(pointers.keys()):
     for pointer in sorted(pointers.keys()):
         jap, eng = pointers[pointer]
         pts_data_tmp = b""
         text_data_tmp = b""
-		      
-        offset = 0x4000+len(pointers)*2+len(text_data)
-        offsets[pointer] = offset
-        pts_data_tmp += struct.pack(b"<H", offset)
-        
+
         if eng.startswith("="):
             #jap, eng = pointers[int(eng.lstrip('='), 16)]
             pts_data_tmp += struct.pack(b"<H", offsets[int(eng.lstrip('='), 16)])
         else:            
+            offset = 0x4000+len(pointers)*2+len(text_data)
+            offsets[pointer] = offset
+            pts_data_tmp += struct.pack(b"<H", offset)
+            
             if len(eng):
                 text_data_tmp += b"\x49" # set english
                 string = eng
@@ -347,7 +351,8 @@ elif mode == "bank":
             l = len(text_data_tmp)
             if(l > max_size + free_space):
                 tmp_new = b""
-                tmp = text_data_tmp[0:max_size-4+free_space]
+                tmp = text_data_tmp[0:max_size+free_space-5]
+                sys.stderr.write(hex(len(tmp)) + " " + hex(free_space) + " -> ")
                 j = ord(tmp[-1])
                 if(j == 0x4a\
                 or j == 0x4c\
@@ -355,23 +360,24 @@ elif mode == "bank":
                 or j == 0x4e\
                 or j == 0x4f):
                     tmp_new += tmp[-1]
-                    tmp = tmp[0:max_size+free_space-1] + b'\x00'
+                    tmp = tmp[0:len(tmp)-1] + b'\x00'
                 elif(b'\x4b' in tmp[-3:]):
                     idx = tmp[-3:].index(b'\x4b')
                     tmp_new += tmp[-3+idx:]
-                    tmp = tmp[0:max_size+free_space-3+idx].ljust(max_size+free_space-1, b'\x00')
-                tmp_new += text_data_tmp[max_size+free_space-4:]
-                s = struct.pack(b"<BBH", 0x4B, additional_file_bank, additional_file_ptr)
+                    tmp = tmp[0:max_size+free_space-5+idx].ljust(max_size+free_space-1, b'\x00')   
+                tmp_new += text_data_tmp[max_size+free_space-5:] + b'\x50'
+                s = struct.pack(b"<BBHB", 0x4B, additional_file_bank, additional_file_ptr, 0x50)
                 tmp += s
+                sys.stderr.write(hex(len(tmp)) + " " + hex(free_space) + "\n")                 
                 text_data_tmp = tmp
                 file.write(tmp_new)
                 additional_file_ptr += len(tmp_new)
                 free_space = 0 #If we enter this part, it means there's no free space left to use
             elif (l > max_size):
-                free_space -= l-max_size
-
-            text_data += text_data_tmp
-            pts_data += pts_data_tmp
+                free_space -= (l-max_size)
+        #sys.stderr.write(hex(free_space) + "\n")        
+        text_data += text_data_tmp
+        pts_data += pts_data_tmp
                       
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?

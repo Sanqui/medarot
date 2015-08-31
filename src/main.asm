@@ -709,7 +709,7 @@ Char4B: ; 0x1ed6
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
-	
+
 	ld a, $d
 	rst $8 ;Char4BAdvice
 	
