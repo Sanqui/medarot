@@ -401,14 +401,14 @@ PutChar: ; $1cc9
 	and $f0
 	swap a
 	push af
-	ld hl, $1d3b
+	ld hl, TextTableBanks
 	ld b, $0
 	ld c, a
 	add hl, bc
 	ld a, [hl]
 	rst $10
 	pop af
-	ld hl, $1d4b
+	ld hl, TextTableOffsets
 	ld b, $0
 	ld c, a
 	sla c
