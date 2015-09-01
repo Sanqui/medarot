@@ -26,9 +26,10 @@ HackPredefTable:
 	dw SelectNameOffset ; $c
 	dw Char4BAdvice ;d
 	dw Char4BAdvice2 ;e
-	dw IncTextOffset3Times ; f
+	dw IncTextOffset4Times ; f
 	dw CheckBank ; 10
 	dw ResetBank ; 11
+	dw SetFlag4F ; 12
 
 HackPredef:
     ; save hl
@@ -491,8 +492,8 @@ IncTextOffset:
     ld [WTextOffsetHi], a
     ret
 
-IncTextOffset3Times:
-	ld a, $3
+IncTextOffset4Times:
+	ld a, $4
 .loop
 	push af
 	call IncTextOffset
@@ -553,14 +554,20 @@ Char4BAdvice2:
 ResetBank:	
 	ld a, $1
 	ld [$c600], a
+	
+	ld a, [Flag4F]
+	cp $01
+	jr nz, .ResetBankRet
 	xor a
+	ld [Flag4F], a
 	ld [TempBank], a
 	ld [TempAddrHi], a
 	ld [TempAddrLo], a
 	ld [$c6c6], a
 	;ld [$c6c0], a
 	ld [WTextOffsetHi], a
-	;Clean up text	
+	;Clean up text
+.ResetBankRet
 	ret
 
 CheckBank:
@@ -576,3 +583,9 @@ CheckBank:
 	ld l,a
 	ld a, [TempBank]
 	ret
+	
+SetFlag4F:
+	ld a, $01
+	ld [Flag4F], a
+	ret
+	
