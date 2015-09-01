@@ -25,6 +25,8 @@ HackPredefTable:
     dw IncTextOffsetAndResetVWF ; $b
 	dw SelectNameOffset ; $c
 	dw Char4BAdvice ;d
+	dw Char4BAdvice2 ;e
+	dw IncTextOffset3Times ; f
 
 HackPredef:
     ; save hl
@@ -487,6 +489,17 @@ IncTextOffset:
     ld [WTextOffsetHi], a
     ret
 
+IncTextOffset3Times:
+	ld a, $3
+.loop
+	push af
+	call IncTextOffset
+	pop af
+	dec a
+	jr nz, .loop
+	ret
+; 0x3105	
+	
 ZeroTextOffset:
     xor a
     ld [$c6c0], a
@@ -510,12 +523,16 @@ SelectNameOffset: ;If it's <= AF00, ld hl,$0002
 	ret
 	
 Char4BAdvice:
-	pop af
-	cp $0
-	jr z, .Char4BAdviceEnd
-	rst $10
-	ld a,$0
-	ld [$c6c5],a
-.Char4BAdviceEnd
+	ld a, [$c6c5] ;2
+	ld c, a ;1
+	ld b, $0 ;2
+	add hl, bc
+	ret
+	
+Char4BAdvice2:
+	ld a, $0
+	ld [$c6c5], a
+	ld c, a ;1
+	ld b, a ;1
 	ret
 	
