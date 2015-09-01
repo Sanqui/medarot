@@ -45,10 +45,10 @@ SECTION "rst30",HOME[$30]
     ld l, a
     ret
 
-SECTION "rst38",HOME[$38] ; Unused
+SECTION "rst38",HOME[$38] 
 	ld a, [hli]
-	ld l, [hl]
-	ld h, a
+	ld h, [hl]
+	ld l, a
 	ret
 
 SECTION "vblank",HOME[$40] ; vblank interrupt
@@ -706,26 +706,27 @@ Char4B: ; 0x1ed6
 	inc hl
 	ld a, [hli] ; bank
 	push af
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-
-	ld a, $d
-	rst $8 ;Char4BAdvice
-	
-	ld a, [$c6c5]
-	ld c, a
-	ld b, $0
-	add hl, bc
+	;ld a, [hli]
+	;ld h, [hl]
+	;ld l, a		
+	rst $38
+	pop af
+	cp $00
+	jr z, .Char4BCont ;2
+	rst $10
+	ld a,$e ;Char4BAdvice2, set b, c, a
+	rst $8
+	jp ProcessText ;3
+	db 0,0,0,0
+.Char4BCont
+	;add hl, bc
+	ld a,$d ;Char4BAdvice, set b, c
+	rst $8
 	ld a, [hl]
 	cp $50
 	jr nz, .asm_1f04 ; 0x1ee4 $1e	
-	ld a, $9
-	rst $8 ; IncTextOffset
-	ld a, $9
-	rst $8 ; IncTextOffset
-	ld a, $9
-	rst $8 ; IncTextOffset
+	ld a, $f
+	rst $8 ; IncTextOffset3Times
 	xor a
 	ld [$c6c5], a
 	ld a, [$c6c4]
@@ -761,7 +762,6 @@ Char4B: ; 0x1ed6
 	;call $17cb
 	;ld [hl], a
 	;ei
-	db 0
 	pop hl
 	ld a, [hl]
 	ld d, a
