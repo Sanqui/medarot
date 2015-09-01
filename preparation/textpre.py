@@ -387,7 +387,7 @@ elif mode == "bank":
     data = pts_data + text_data
     data = data.ljust(pad-1, b'\x00') # XXX why -1?
 
-    print data
+    sys.stdout.write(data)
 
     if(file.tell() < pad):
         file.seek(pad-1)

@@ -44,9 +44,18 @@ VWFBuildArea2:
     ds 8
 VWFBuildArea3:
     ds 8
-
 ListText: ;dfd1
 	ds 8
 	ds 8
 	ds 8
 	ds 8
+TempBank:
+	ds 1
+TempAddrHi:
+	ds 1
+TempAddrLo:
+	ds 1
+TempOffsetLo:
+	ds 1
+TempOffsetHi:
+	ds 1

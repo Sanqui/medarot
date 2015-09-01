@@ -424,12 +424,14 @@ PutChar: ; $1cc9
 	sla c
 	rl b
 	add hl, bc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
+	rst $38
+	db 0
+HandleTextOffset: ;1d10
+	ld a, $10
+	rst $8 ;CheckBank
+	rst $10
 	push hl
-	ld a, [$c6c0]
-	ld a, $8
+	ld a, $08
 	rst $8 ; GetTextOffset
 ProcessText: ;1d18
 	add hl, bc
@@ -488,9 +490,13 @@ Char4F: ; 1d6b end of text
 	;ld a, $7; Char4FAdvice
 	;rst $0
 	
+	ld a, $11 ;2
+	rst $8 ;1
+	
 	inc hl
 	ld a, [hl]
 	or a
+	
 	jp nz, .Char4fMore
 	ld a, [$ff8d]
 	and $3
@@ -517,7 +523,6 @@ Char4F: ; 1d6b end of text
 	ld [$c6c6], a
 	pop hl
 	ret
-
 .Char4fMore: ; 0x1da0
 	ld a, [hl]
 	cp $1
@@ -591,6 +596,7 @@ Char4F: ; 1d6b end of text
 	ld [$c6c6], a
 	pop hl
 	ret
+	
 Char4E:
 	ld hl, $9c00
 	ld bc, $0081
@@ -606,13 +612,12 @@ Char4E:
 	ld [$c6c3], a
 	ld a, [$c6c0]
 	
-	nop
 	ld a, $b
 	rst $8 ; IncTextOffsetAndResetVWF
 	;inc a
 	;ld [$c6c0], a
 	pop hl
-	jp $1d11
+	jp HandleTextOffset
 
 Char4D: ; 0x1e46
 ; text speed
@@ -623,8 +628,6 @@ Char4D: ; 0x1e46
 	;ld a, [$c6c0]
 	ld a, $9
 	rst $8 ; IncTextOffset
-	nop
-	nop
 	;add $2
 	ld a, $9
 	rst $8 ; IncTextOffset
@@ -714,10 +717,13 @@ Char4B: ; 0x1ed6
 	cp $00
 	jr z, .Char4BCont ;2
 	rst $10
+	ld b,h
+	ld c,l
+	pop hl
 	ld a,$e ;Char4BAdvice2, set b, c, a
 	rst $8
-	jp ProcessText ;3
-	db 0,0,0,0
+	jp HandleTextOffset;3
+	db 0
 .Char4BCont
 	;add hl, bc
 	ld a,$d ;Char4BAdvice, set b, c
@@ -736,7 +742,7 @@ Char4B: ; 0x1ed6
 	ret nz
 	xor a
 	ld [$c6c1], a
-	jp $1d11
+	jp HandleTextOffset
 .asm_1f04
 	ld d, a
 	ld a, $40
@@ -781,7 +787,6 @@ Char4B: ; 0x1ed6
 	rst $8 ; 1 ; WriteCharAdvice
 	ld a, [hSaveA]
 	nop
-	
 	ld a, h
 	ld [$c6c2], a
 	ld a, l
@@ -796,7 +801,7 @@ Char4B: ; 0x1ed6
 	ret nz
 	xor a
 	ld [$c6c1], a
-	jp $1d11
+	jp HandleTextOffset
 
 
 Char4A: ; 0x1f5f
@@ -875,7 +880,7 @@ WriteChar: ; 1f96
 	;ld [hl], a ; 1
 	
 	ld [hSaveA], a ; 2
-	xor a ; 1
+	xor a ; 1 WriteCharAdvice
 	rst $8 ; 1
 	ld a, [hSaveA]
 	nop
@@ -898,7 +903,7 @@ WriteChar: ; 1f96
 	ret nz
 	xor a
 	ld [$c6c1], a
-	jp $1d11
+	jp HandleTextOffset
 ; 0x1ff2
 
 

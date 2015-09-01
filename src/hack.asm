@@ -27,6 +27,8 @@ HackPredefTable:
 	dw Char4BAdvice ;d
 	dw Char4BAdvice2 ;e
 	dw IncTextOffset3Times ; f
+	dw CheckBank ; 10
+	dw ResetBank ; 11
 
 HackPredef:
     ; save hl
@@ -530,9 +532,69 @@ Char4BAdvice:
 	ret
 	
 Char4BAdvice2:
-	ld a, $0
-	ld [$c6c5], a
+	ld a,[BankOld]
+	ld [TempBank],a
+	ld h,b
+	ld a,h
+	ld [TempAddrHi],a
+	ld l,c
+	ld a,l
+	ld [TempAddrLo],a
+	ld a, [$c6c0]
+	ld [TempOffsetLo],a
+	ld a, [WTextOffsetHi]
+	ld [TempOffsetHi], a
+	xor a
+	ld [$c6c0], a
+	ld [WTextOffsetHi], a
+	;ld [$c6c5], a
+	;ld [$c5c7], a
 	ld c, a ;1
 	ld b, a ;1
 	ret
+
+ResetBank:
+	push hl
+	push bc
+	ld a, [$c6c6]
+	ld c, a
+	ld a, [WTextOffsetHi]
+	ld b,a
 	
+	ld a, [TempOffsetLo]
+	ld l, a
+	ld a, [TempOffsetHi]
+	ld h, a
+
+	add hl, bc	
+	
+	ld a, l
+	ld [$c6c6], a
+	ld a, h
+	ld [WTextOffsetHi], a
+
+	ld a, $10
+	ld [$c6c5], a
+	
+	xor a
+	ld [TempBank], a
+	ld [TempAddrHi], a
+	ld [TempAddrLo], a
+	;Clean up text	
+	pop hl
+	pop bc
+	ret
+
+CheckBank:
+	ld a, [TempBank]
+	cp $0
+	jr nz, .ChangeBank
+	ld a, [BankOld]
+	ret
+.ChangeBank
+	ld a,[TempAddrHi]
+	ld h,a
+	ld a,[TempAddrLo]
+	ld l,a
+	ld a, [TempBank]
+	ret
