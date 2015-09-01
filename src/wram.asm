@@ -55,7 +55,3 @@ TempAddrHi:
 	ds 1
 TempAddrLo:
 	ds 1
-TempOffsetLo:
-	ds 1
-TempOffsetHi:
-	ds 1

@@ -386,12 +386,13 @@ PutChar: ; $1cc9
 	ld a, [$c6c0]
 	sub $2
 	jr nc, .asm_1cda ; 0x1cd3 $5
-	ld a, $1
-	ld [$c600], a
+	ld a, $11 ;2 
+	rst $8 ;1 ResetBank
+	db 0,0
 .asm_1cda
 	ld a, [$c6c1]
 	or a
-	jr .nowait
+	jr z, .nowait
 	dec a
 	ld [$c6c1], a
 	ret
@@ -490,9 +491,8 @@ Char4F: ; 1d6b end of text
 	;ld a, $7; Char4FAdvice
 	;rst $0
 	
-	ld a, $11 ;2
-	rst $8 ;1
-	
+
+	db 0,0,0
 	inc hl
 	ld a, [hl]
 	or a
