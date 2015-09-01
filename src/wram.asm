@@ -55,3 +55,5 @@ TempAddrHi:
 	ds 1
 TempAddrLo:
 	ds 1
+Flag4F:
+	ds 1
