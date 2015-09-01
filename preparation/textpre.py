@@ -360,10 +360,8 @@ elif mode == "bank":
                 tmp_new = b""
                 tmp = text_data_tmp[0:max_size+free_space-5]
                 j = ord(tmp[-1])
-                if(j == 0x4a\
-                or j == 0x4c\
-                or j == 0x4d\
-                or j == 0x4e\
+                if(\
+                j == 0x4d\
                 or j == 0x4f):
                     tmp_new += tmp[-1]
                     tmp = tmp[0:len(tmp)-1] + b'\x00'
@@ -464,7 +462,3 @@ elif mode == "tilemaps":
     #sys.stderr.write(hex(len(data))+'\n')
     assert len(pts_data+data) <= pad, "Tilemap data too long: "+str(hex(len(pts_data+data)))+'\n'
     sys.stdout.write(pts_data+data)
-
-
-
-
