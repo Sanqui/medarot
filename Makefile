@@ -82,6 +82,11 @@ $(TARGET_OUT): $(BUILD)/$(TARGET).o
 	$(LD) $(LD_ARGS) -o $@ $<
 	$(FIX) $(FIX_ARGS) $@
 
+rom: 
+	$(CC) $(CC_ARGS) -o $(BUILD)/$(TARGET).o $(SRC)/$(TARGET).$(SOURCE_TYPE)
+	$(LD) $(LD_ARGS) -o $(TARGET_OUT) $(BUILD)/$(TARGET).o
+	$(FIX) $(FIX_ARGS) $(TARGET_OUT)
+
 clean:
 	rm -rf $(BUILD) $(TARGET_OUT)
 
