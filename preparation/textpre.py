@@ -100,7 +100,7 @@ def pack_string(string, table, ignore_vwf):
     skip = False
     
     even_line = True
-    
+    quote_flag = False
     for char in string:
         if skip:
             skip = False
@@ -171,8 +171,18 @@ def pack_string(string, table, ignore_vwf):
                         word_data += chr(NB)
                         #even_line = False
                     else:
-                        word_data += chr(table[char])
-                        word_px += vwf_table[table[char]]+1
+                        if(char == "\""
+                        and quote_flag == True):
+                            word_data += chr(table["~\""])
+                            word_px += vwf_table[table["~\""]]+1
+                            quote_flag = False
+                        elif(char == "\""):
+                            quote_flag = True
+                            word_data += chr(table[char])
+                            word_px += vwf_table[table[char]]+1
+                        else:
+                            word_data += chr(table[char])
+                            word_px += vwf_table[table[char]]+1
                 except KeyError: # temporary
                     sys.stderr.write("Warning: Unknown char: " + char.encode('ascii', 'backslashreplace') + "\n")
                     word_data += chr(table["?"])

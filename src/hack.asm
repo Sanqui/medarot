@@ -30,6 +30,7 @@ HackPredefTable:
 	dw CheckBank ; 10
 	dw ResetBank ; 11
 	dw SetFlag4F ; 12
+	dw SetInitialName ;13
 
 HackPredef:
     ; save hl
@@ -589,3 +590,24 @@ SetFlag4F:
 	ld [Flag4F], a
 	ret
 	
+SetInitialName: ;9 total: 8 name + 0x50 for terminator
+	ld a, $d9 ; H
+    ld [hli], a
+	ld a, $c0 ; i
+	ld [hli], a
+	ld a, $c2 ; k
+    ld [hli], a
+	ld a, $b8 ; a
+	ld [hli], a
+	ld a, $c9 ; r
+    ld [hli], a
+	ld a, $cc ; u
+	ld [hli], a
+	ld a, $50
+	ld [hli], a
+	xor a
+	ld [hli], a
+	ld [hli], a
+	ld a, $7
+    ld [$c5ce], a
+	ret

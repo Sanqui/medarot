@@ -1314,28 +1314,34 @@ SetupInitialNameScreen: ;4a9f
     ld [hli], a
     ld [hli], a
     ld [$c6c6], a
-    ld hl, $c6a2
-    ld a, $9a
-    ld [hli], a
-    ld a, $85
-    ld [hli], a
-    ld a, $a8
-    ld [hli], a
-    ld a, $50
-    ld [hli], a
-    xor a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld a, $3
-    ld [$c5ce], a
-    ld a, $2
+	ld hl, ListText
+	ld a, $13 ;SetInitialName
+	rst $8
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+    ld a, $6
     call $015f
     nop
 	nop
-    ld a, $2
+    ld a, $2 ;Load Font
     rst $8
     ld b, $0
     ld c, $0
@@ -1349,7 +1355,7 @@ SetupInitialNameScreen: ;4a9f
     ld c, $1
     ld e, $29
     call $015c
-    ld hl, $c6a2
+    ld hl, ListText
     ld bc, $984a
     call $0264
     call $5213
