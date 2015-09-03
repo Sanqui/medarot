@@ -2209,21 +2209,15 @@ ItemData:
 	INCBIN "build/items.bin"
 	
 SECTION "bank2c",DATA,BANK[$2c]
-	INCBIN "build/Dialogue_1_Additional.bin" 
+	INCBIN "build/additional/Additional_0.bin" 
 SECTION "bank2d",DATA,BANK[$2d]
-	INCBIN "build/Dialogue_2_Additional.bin"
+	INCBIN "build/additional/Additional_1.bin"
 SECTION "bank2e",DATA,BANK[$2e]
-	INCBIN "build/Dialogue_3_Additional.bin"
 SECTION "bank2f",DATA,BANK[$2f]
-	INCBIN "build/Snippet_1_Additional.bin"
 SECTION "bank30",DATA,BANK[$30]
-	INCBIN "build/Snippet_2_Additional.bin"
 SECTION "bank31",DATA,BANK[$31]
-	INCBIN "build/Snippet_3_Additional.bin"
 SECTION "bank32",DATA,BANK[$32]
-	INCBIN "build/Snippet_4_Additional.bin"
 SECTION "bank33",DATA,BANK[$33]
-	INCBIN "build/Snippet_5_Additional.bin"
 SECTION "bank34",DATA,BANK[$34]
 SECTION "bank35",DATA,BANK[$35]
 SECTION "bank36",DATA,BANK[$36]

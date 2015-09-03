@@ -7,19 +7,18 @@ from io import open
 mode = sys.argv[1]
 if "list" not in mode:
 	pad = int(sys.argv[2], 16) #Ignored for list
-    
-if mode == "bank":
-    additional_file = sys.argv[3]
-    g = sys.argv[3].split("_")
-    if(len(g) > 2):
-        additional_file_bank = int(g[1], 10) + 0x2b
-        if(g[0] == "Snippets"):
-            additional_file_bank += 3
+
+if "bank" in mode:
+    build = sys.argv[3]
 
 table = {}
 tablejp = {}
 
 i = 0x00
+
+global additional_file
+global additional_file_bank
+global additional_file_ptr
 
 # Look at me!  I can copy-paste!
 class Special():
@@ -62,6 +61,27 @@ with open('src/vwftable.asm') as f:
                     pass
 
 #sys.stderr.write(str(vwf_table))
+
+def set_additional_file(buf = 0):
+    global additional_file
+    global additional_file_ptr
+    global additional_file_bank
+    n = 0
+    additional_file = build + "/Additional_" + str(n) + ".bin"
+    f = open(additional_file,'ab')
+    f.seek(0,2) 
+    pos = 0
+    while(f.tell() + buf >= pad-1):
+        
+        f.close()
+        n = n+1
+        additional_file = build + "/Additional_" + str(n) + ".bin"
+        f = open(additional_file,'ab')
+        pos = f.seek(0,2)
+     
+    additional_file_bank = 0x2c + n
+    additional_file_ptr = 0x4000 + pos
+    return f
 
 NL = 0x4E
 NB = 0x4C
@@ -273,6 +293,7 @@ if mode == "list":
         sys.stdout.write(bts)
 
 elif mode == "bank":
+    global additional_file_ptr
     pointers = {}
     total_ptr = 0 #Total unique strings
     mediawiki = sys.stdin.read().decode('utf-8')
@@ -292,9 +313,9 @@ elif mode == "bank":
 
     free_space = pad-2*len(pointers)
     
+    
     max_size = free_space/total_ptr #Enforce a max size for each unique string    
-    additional_file_ptr = 0x4000;
-    file = open(additional_file, 'wb')
+    file = set_additional_file()
         
     assert max_size > 4, "Maximum possible size of text below 5, need to find another solution"
 
@@ -373,6 +394,9 @@ elif mode == "bank":
                 s = struct.pack(b"<BBHB", 0x4B, additional_file_bank, additional_file_ptr, 0x50)
                 tmp += s              
                 text_data_tmp = tmp
+                if(file.tell() + len(tmp_new) > pad-1):
+                    file.close()
+                    file = set_additional_file(len(tmp_new))
                 file.write(tmp_new)
                 additional_file_ptr += len(tmp_new)
                 free_space = 0 #If we enter this part, it means there's no free space left to use
@@ -387,9 +411,6 @@ elif mode == "bank":
 
     sys.stdout.write(data)
 
-    if(file.tell() < pad):
-        file.seek(pad-1)
-        file.write(b'\x00')
     file.close()
     
 elif mode == "tilemaps":
