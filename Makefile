@@ -57,7 +57,7 @@ all: $(TARGET_OUT)
 auto: download $(TARGET_OUT)
 
 #Download files
-download: $(TEXT) 
+download: $(TEXT) cleanadditional
 	$(PYTHON) preparation/get_text.py
 
 #Generate Binary files (tilemaps, text, lists, etc...)
