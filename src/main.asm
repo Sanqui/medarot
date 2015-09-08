@@ -1314,7 +1314,7 @@ SetupInitialNameScreen: ;4a9f
     ld [hli], a
     ld [hli], a
     ld [$c6c6], a
-	ld hl, ListText
+	ld hl, $c6a2 ;TODO: Change to ListText
 	ld a, $13 ;SetInitialName
 	rst $8
     ld a, $6
@@ -1333,7 +1333,7 @@ SetupInitialNameScreen: ;4a9f
     ld c, $1
     ld e, $29
     call $015c
-    ld hl, ListText
+    ld hl, $c6a2 ;TODO: Change to ListText
     ld bc, $984a
     ;call $0264
 	call CopyRAMtoVRAM
