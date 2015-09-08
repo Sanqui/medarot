@@ -38,7 +38,7 @@ HackPredef:
     ld [TempH], a
     ld a, l
     ld [TempL], a
-    
+
     push bc
     ld hl, HackPredefTable
     ld b, 0
@@ -53,7 +53,7 @@ HackPredef:
     push bc
     pop hl
     pop bc
-    
+
     push hl
     ld a, [TempH]
     ld h, a
@@ -86,7 +86,7 @@ WriteCharAdvice:
     ; original code
 	;di ; 1
 	;call $17cb ; 3
-	;ld [hl], a 
+	;ld [hl], a
 	;ei
     ret
 
@@ -150,7 +150,7 @@ CopyColumn:
     pop de
     pop hl
     ret
-    
+
 WriteVWFChar:
     ;push de
     push hl
@@ -162,11 +162,11 @@ WriteVWFChar:
     ld [hl], d
     inc hl
     ld [hl], e
-    
+
     ; Check if VWF is enabled, bail if not.
     ;ld a, [W_VWF_ENABLED]
     ;dec a
-    
+
     ; write to tilemap
     pop hl
     ld a, [VWFCurTileNum]
@@ -177,7 +177,7 @@ WriteVWFChar:
     ld [hl], a
     ei
     push hl
-    
+
     ; Get the character in VWF's font.
     ld a, [VWFChar]
     ;cp $80
@@ -206,10 +206,10 @@ WriteVWFChar:
     ld bc, $0008
     ld de, VWFBuildArea0
     call CopyBytes ; copy bc source bytes from hl to de
-    
+
     ld a, $1
     ld [VWFNumTilesUsed], a
-    
+
     ; Get the character length from the width table.
     ld a, [VWFCharset]
     and a
@@ -250,7 +250,7 @@ WriteVWFChar:
     ld a, [VWFCharWidth]
     dec a
     ld [VWFCharWidth], a
-    jr nz, .DoColumn 
+    jr nz, .DoColumn
     jr .Done
 .TileOverflow
     ld c, $80
@@ -271,12 +271,12 @@ WriteVWFChar:
     ld a, c
     ld [VWFCurTileCol], a
 .NoDrawing
-    
+
     ;ld de, W_VWF_BUILDAREA1
     ;ld hl, W_VWF_BUILDAREA3
-    
-    
-    
+
+
+
     ; 1bpp -> 2bpp
     ;ld b, 0
     ;ld c, $10
@@ -292,10 +292,10 @@ WriteVWFChar:
     ld c, a
     ld a, 16
     call AddNTimes
-    
+
     push hl
     pop de
-    
+
     ; Write the new tile(s)
 
     ld hl, VWFBuildArea2
@@ -308,11 +308,11 @@ WriteVWFChar:
     dec a
     jr nz, .SecondAreaUnused
     ; if we went over one tile, copy it too.
-    
+
     ld hl, VWFBuildArea3
     ld bc, $0008
     call CopyVRAMDataDouble
-    
+
     ; If we went over one tile, make sure we start with it next time.
     ; also move through the tilemap.
     ld a, [VWFCurTileNum]
@@ -333,17 +333,17 @@ WriteVWFChar:
     ld [hli], a
     ld [hli], a
     ld [hli], a ; lazy
-    
+
     pop hl
     inc hl
     ld a, [VWFCurTileNum]
     add $80
-    
+
     di
     call $17cb
     ld [hl], a
     ei
-    
+
     push hl
     jr .FixOverflow
 .SecondAreaUnused
@@ -364,12 +364,12 @@ WriteVWFChar:
 .AlmostDone
     ;call WaitDMA
     pop hl
-    
+
     ;ld a, h
     ;ld [$c6c2], a
     ;ld a, l
     ;ld [$c6c3], a
-    
+
     ;pop de
     ret
 
@@ -388,7 +388,7 @@ CopyBytes: ; 0x3026
 	dec b
 	jr nz, .CopyByte
 	ret
-	
+
 AddNTimes: ; 0x30fe
 ; adds bc n times where n = a
 	and a
@@ -457,7 +457,7 @@ Dec0AAndLoadFont2:
     pop af
     ld [$c6e0], a
     jp LoadFont2
-    
+
 LoadFontDialogueAdvice:
     call LoadFont_
     call ResetVWF
@@ -469,7 +469,7 @@ LoadFontDialogueAdvice:
 
 ;Char4FAdvice:
 ;	call ResetVWF
-;	
+;
 ;	; o
 ;	inc hl
 ;	ld a, [hl]
@@ -502,8 +502,8 @@ IncTextOffset4Times:
 	dec a
 	jr nz, .loop
 	ret
-; 0x3105	
-	
+; 0x3105
+
 ZeroTextOffset:
     xor a
     ld [$c6c0], a
@@ -514,7 +514,7 @@ IncTextOffsetAndResetVWF:
     call IncTextOffset
     call ResetVWF
     ret
-	
+
 SelectNameOffset: ;If it's <= AF00, ld hl,$0002
 	ld a,d
 	;cp a,$AC
@@ -525,14 +525,14 @@ SelectNameOffset: ;If it's <= AF00, ld hl,$0002
 .asm_SNO_1:
 	ld hl,$0002
 	ret
-	
+
 Char4BAdvice:
 	ld a, [$c6c5] ;2
 	ld c, a ;1
 	ld b, $0 ;2
 	add hl, bc
 	ret
-	
+
 Char4BAdvice2:
 	ld a,[BankOld]
 	ld [TempBank],a
@@ -545,17 +545,17 @@ Char4BAdvice2:
 	xor a
 	ld [$c6c0], a
 	ld [WTextOffsetHi], a
-	
+
 	;ld [$c6c5], a
 	;ld [$c5c7], a
 	ld c, a ;1
 	ld b, a ;1
 	ret
 
-ResetBank:	
+ResetBank:
 	ld a, $1
 	ld [$c600], a
-	
+
 	ld a, [Flag4F]
 	cp $01
 	jr nz, .ResetBankRet
@@ -584,12 +584,12 @@ CheckBank:
 	ld l,a
 	ld a, [TempBank]
 	ret
-	
+
 SetFlag4F:
 	ld a, $01
 	ld [Flag4F], a
 	ret
-	
+
 SetInitialName: ;9 total: 8 name + 0x50 for terminator
 	ld a, $d9 ; H
     ld [hli], a
@@ -608,6 +608,6 @@ SetInitialName: ;9 total: 8 name + 0x50 for terminator
 	xor a
 	ld [hli], a
 	ld [hli], a
-	ld a, $7
+	ld a, $6
     ld [$c5ce], a
 	ret

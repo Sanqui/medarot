@@ -17,7 +17,7 @@ SECTION "rst10",HOME[$10] ; Bankswitch
 	ld [$2000], a
 	ret
 
-SECTION "rst18",HOME[$18] 
+SECTION "rst18",HOME[$18]
 	ld a, [$c6e0]
 	;ld [$2000], a
 	rst $10
@@ -45,7 +45,7 @@ SECTION "rst30",HOME[$30]
     ld l, a
     ret
 
-SECTION "rst38",HOME[$38] 
+SECTION "rst38",HOME[$38]
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
@@ -386,10 +386,10 @@ PutChar: ; $1cc9
 	ld a, [$c6c0]
 	sub $2
 	jr nc, .asm_1cda ; 0x1cd3 $5
-	
-	ld a, $11 ;2 
+
+	ld a, $11 ;2
 	rst $8 ;1 ResetBank
-	
+
 	db 0,0
 .asm_1cda
 	ld a, [$c6c1]
@@ -452,7 +452,7 @@ ProcessText: ;1d18
 	cp $4a
 	jp z, Char4AAdvice
 	jp WriteChar
-	
+
 TextTableBanks: ; 0x1d3b
     db BANK(Snippet1)
     db BANK(Snippet2)
@@ -492,14 +492,14 @@ TextTableOffsets: ; 0x1d4b
 Char4F: ; 1d6b end of text
 	;ld a, $7; Char4FAdvice
 	;rst $0
-	
+
 	ld a, $12
 	rst $8 ;SetFlag4F
 
 	inc hl
 	ld a, [hl]
 	or a
-	
+
 	jp nz, .Char4fMore
 	ld a, [$ff8d]
 	and $3
@@ -599,7 +599,7 @@ Char4F: ; 1d6b end of text
 	ld [$c6c6], a
 	pop hl
 	ret
-	
+
 Char4E:
 	ld hl, $9c00
 	ld bc, $0081
@@ -614,7 +614,7 @@ Char4E:
 	ld a, l
 	ld [$c6c3], a
 	ld a, [$c6c0]
-	
+
 	ld a, $b
 	rst $8 ; IncTextOffsetAndResetVWF
 	;inc a
@@ -714,7 +714,7 @@ Char4B: ; 0x1ed6
 	push af
 	;ld a, [hli]
 	;ld h, [hl]
-	;ld l, a		
+	;ld l, a
 	rst $38
 	pop af
 	cp $00
@@ -733,7 +733,7 @@ Char4B: ; 0x1ed6
 	rst $8
 	ld a, [hl]
 	cp $50
-	jr nz, .asm_1f04 ; 0x1ee4 $1e	
+	jr nz, .asm_1f04 ; 0x1ee4 $1e
 	ld a, $f
 	rst $8 ; IncTextOffset4Times
 	xor a
@@ -833,7 +833,7 @@ Char4A: ; 0x1f5f
 	ld [$c6c3], a
 	ld a, [$c6c0]
 	inc a
-	
+
 	ld a, $9
 	rst $8 ; IncTextOffset
 	;ld [$c6c0], a
@@ -881,13 +881,13 @@ WriteChar: ; 1f96
 	;di ; 1
 	;call $17cb ; 3
 	;ld [hl], a ; 1
-	
+
 	ld [hSaveA], a ; 2
 	xor a ; 1 WriteCharAdvice
 	rst $8 ; 1
 	ld a, [hSaveA]
 	nop
-	
+
 	;ei
 	;inc hl
 	ld a, h
@@ -979,8 +979,8 @@ LoadMedarotterData: ;Load Medarotter Names 2e58 to 2eaf
     ld [$c740], a
     xor a
     ld [$c741], a
-    ret 
-;2eb0	
+    ret
+;2eb0
 
 INCBIN "baserom.gbc", $2eb0,$2f43-$2eb0
 
@@ -1021,7 +1021,7 @@ PutString: ; 2fcf
     ld a, $1 ; 2 ; PutStringAdvice
     rst $8 ; 1
     nop
-    
+
 	;ld a, h ; 1
 	;ld [$c640], a ; 3
 	ld a, l
@@ -1060,20 +1060,20 @@ PutString: ; 2fcf
 	ld a, [$c643]
 	ld l, a
 	ld a, [$c64e]
-	
+
 	;di ; 1
 	;call $17cb ; 3
 	;ld [hl], a ; 1
-	
+
 	ld [hSaveA], a ; 2
 	xor a ; 1
 	rst $8 ; 1 ; WriteCharAdvice
 	ld a, [hSaveA]
 	nop
-	;db 0, 0, 0, 0, 0, 0, 0	
+	;db 0, 0, 0, 0, 0, 0, 0
 	;ei
 	;inc hl
-	
+
 	ld a, h
 	ld [$c642], a
 	ld a, l
@@ -1123,7 +1123,7 @@ LoadItemData: ;328f to 32b8, 0x29 bytes
 	dec b
 	jr nz,.asm_032b2
 	ret
-	
+
 LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	push af
 	ld a,Bank(MedalData)
@@ -1131,7 +1131,7 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	pop af
 	ld hl, MedalData
 	ld b,$00
-	ld c,a 
+	ld c,a
 	call GetListOffset ;6
 	nop
 	nop
@@ -1153,7 +1153,7 @@ LoadMedalData: ;0x32b9 to 0x32de, 0x26 bytes
 	jr nz,.asm_032d8
 	ret
 
-INCBIN "baserom.gbc", $32df,$34f0-$32df	
+INCBIN "baserom.gbc", $32df,$34f0-$32df
 
 ;TODO: Find out what these unknowns are
 unk_0034f0:  ;0:34f0, 0x034f0 seems to load data into RAM for the setup screen to use
@@ -1317,30 +1317,8 @@ SetupInitialNameScreen: ;4a9f
 	ld hl, ListText
 	ld a, $13 ;SetInitialName
 	rst $8
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
-	nop
     ld a, $6
     call $015f
-    nop
-	nop
     ld a, $2 ;Load Font
     rst $8
     ld b, $0
@@ -1357,8 +1335,9 @@ SetupInitialNameScreen: ;4a9f
     call $015c
     ld hl, ListText
     ld bc, $984a
-    call $0264
-    call $5213
+    ;call $0264
+	call CopyRAMtoVRAM
+	call $5213
     ld a, $1
     ld [$ffa0], a
     ld a, $4
@@ -1370,9 +1349,37 @@ SetupInitialNameScreen: ;4a9f
     ld a, $2
     call $0309
     jp $0168
+;Will copy data until we hit 0x50
+CopyRAMtoVRAM: ;hl = Initial Addr, bc = To Addr
+	push hl
+	push bc
+	push af
+.CopyRAMtoVRAMloop:
+	ld a, [hli]
+	cp $50
+	jr z, .copyRAMtoVRAMRet
+	di
+	call $17cb
+	ld [bc], a
+	inc bc
+	ei
+	jr .CopyRAMtoVRAMloop
+.copyRAMtoVRAMRet:
+	pop af
+	pop bc
+	pop hl
+	ret
+;extra space
+	nop
 ; 0x4b1c
+INCBIN "baserom.gbc", $4b1c,$4b2e-$4b1c
 
-INCBIN "baserom.gbc", $4b1c,$64a6-$4b1c
+;TODO: Properly disassemble this routine which draws the OAM for the setup screen
+;4b2e
+ld a, $88
+;4b30
+
+INCBIN "baserom.gbc", $4b30,$64a6-$4b30
 
 ; after battle won
     ld a, 2 ; LoadFont_
@@ -1911,7 +1918,7 @@ INCBIN "baserom.gbc", $14000,$158b5-$14000
 unk_0558B5: ;05:58b5, 0x158b5, pulls name text during attacks
 	push de
     ;ld hl, $0002 ;TODO: When we have a better disassembly, just have this information stored in a special RAM location
-    ld a,$c 
+    ld a,$c
 	rst $8 ;Use 0002 for ac00 and -0010 for af00
 	add hl, de
     ld de, ListText
@@ -1980,7 +1987,7 @@ unk_0558f4: ;05:58f4, 0x158f4
     ret
 ; 0x1591a
 INCBIN "baserom.gbc", $1591a,$18000-$1591a
-	
+
 SECTION "bank6",DATA,BANK[$6]
 INCBIN "baserom.gbc", $18000,$4000
 
@@ -2068,7 +2075,7 @@ StatsScreen: ; 6ec7e
 	call $02b8
 	push de
     ;ld hl, $0002 ;TODO: When we have a better disassembly, just have this information stored in a special RAM location
-    ld a,$c 
+    ld a,$c
 	rst $8 ;Use 0002 for ac00 and -0010 for af00
 	add hl, de
 	push hl
@@ -2212,22 +2219,22 @@ INCBIN "baserom.gbc", $7c000,$4000
 
 ; look!  it's a new bank!
 SECTION "bank20",DATA,BANK[$20]
-    
+
 StoryText1:
     INCBIN "build/Dialogue_1.bin"
-    
+
 SECTION "bank21",DATA,BANK[$21]
 
 BattleText:
     INCBIN "build/Battles.bin"
 
 SECTION "bank22",DATA,BANK[$22]
-    
+
 StoryText2:
     INCBIN "build/Dialogue_2.bin"
 
 SECTION "bank23",DATA,BANK[$23]
-    
+
 StoryText3:
     INCBIN "build/Dialogue_3.bin"
 
@@ -2243,7 +2250,7 @@ Snippet1:
 SECTION "bank26",DATA,BANK[$26]
 Snippet2:
     INCBIN "build/Snippet_2.bin"
-	
+
 SECTION "bank27",DATA,BANK[$27]
 Snippet3:
     INCBIN "build/Snippet_3.bin"
@@ -2251,8 +2258,8 @@ Snippet3:
 SECTION "bank28",DATA,BANK[$28]
 Snippet4:
     INCBIN "build/Snippet_4.bin"
-	
-SECTION "bank29",DATA,BANK[$29] 
+
+SECTION "bank29",DATA,BANK[$29]
 Snippet5:
     INCBIN "build/Snippet_5.bin"
 
@@ -2272,18 +2279,18 @@ GetListOffset: ;For most list offsets
 	sla c ;16 byte offset
 	rl b
 	ret
-	
+
 MedalData:
 	INCBIN "build/medals.bin"
-	
+
 MedarotNames:
     INCBIN "build/medarots.bin"
 
 ItemData:
 	INCBIN "build/items.bin"
-	
+
 SECTION "bank2c",DATA,BANK[$2c]
-	INCBIN "build/additional/Additional_0.bin" 
+	INCBIN "build/additional/Additional_0.bin"
 SECTION "bank2d",DATA,BANK[$2d]
 	INCBIN "build/additional/Additional_1.bin"
 SECTION "bank2e",DATA,BANK[$2e]
@@ -2304,4 +2311,3 @@ SECTION "bank3c",DATA,BANK[$3c]
 SECTION "bank3d",DATA,BANK[$3d]
 SECTION "bank3e",DATA,BANK[$3e]
 SECTION "bank3f",DATA,BANK[$3f]
-
