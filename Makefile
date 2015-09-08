@@ -61,6 +61,7 @@ download: $(TEXT)
 	$(PYTHON) preparation/get_text.py
 
 #Generate Binary files (tilemaps, text, lists, etc...)
+
 preparation: $(BUILD) $(TEXT) $(BUILD_ADDITIONAL) $(LISTS_OBJ) $(SNIPPETS_OBJ) $(STORYTEXT_OBJ) $(BUILD)/tilemaps.bin
 
 #Build tilemaps
@@ -76,8 +77,12 @@ $(BUILD)/%.$(BIN_TYPE): $(TEXT)/%.$(TEXT_TYPE_LIST)
 	$(PYTHON) preparation/textpre.py list < $(TEXT)/$(*F).$(TEXT_TYPE_LIST) > $(BUILD)/$(*F).$(BIN_TYPE)
 	
 #ROM object is dependent on all asm files, but they're all grouped into a single asm (e.g. medarot.asm)
-$(BUILD)/$(TARGET).o: $(wildcard $(SRC)/*.$(SOURCE_TYPE)) preparation autopad $(wildcard $(BUILD)/*.$(BIN_TYPE))
-	$(CC) $(CC_ARGS) -o $@ $(SRC)/$(TARGET).$(SOURCE_TYPE) 
+$(BUILD)/$(TARGET).o: $(wildcard $(SRC)/*.$(SOURCE_TYPE)) preparation $(BUILD_ADDITIONAL)/dummy
+	$(CC) $(CC_ARGS) -o $@ $(SRC)/$(TARGET).$(SOURCE_TYPE)
+	
+$(BUILD_ADDITIONAL)/dummy:
+	touch $(BUILD_ADDITIONAL)/dummy
+	python preparation/autopad.py 0x4000 $(BUILD_ADDITIONAL)/*.$(BIN_TYPE)
 
 $(TARGET_OUT): $(BUILD)/$(TARGET).o
 	$(LD) $(LD_ARGS) -o $@ $<
@@ -88,16 +93,14 @@ rom:
 	$(LD) $(LD_ARGS) -o $(TARGET_OUT) $(BUILD)/$(TARGET).o
 	$(FIX) $(FIX_ARGS) $(TARGET_OUT)
 
-autopad: $(SNIPPETS_OBJ) $(STORYTEXT_OBJ) 
-	$(PYTHON) preparation/autopad.py 0x4000 $(BUILD_ADDITIONAL)/*.$(BIN_TYPE)
-	
+
 
 clean: cleanadditional
 	rm -rf $(BUILD) $(TARGET_OUT)
 
 cleanadditional:
 	rm -rf $(BUILD_ADDITIONAL)
-
+	
 #Make directories if necessary
 $(BUILD):
 	mkdir $(BUILD)
