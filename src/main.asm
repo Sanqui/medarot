@@ -1609,7 +1609,551 @@ SetupData_LoadRAM: ;04:4d8f, Loads names into RAM + more?
     ret
 ; 0x10ddb
 
-INCBIN "baserom.gbc", $10ddb,$1120c-$10ddb
+INCBIN "baserom.gbc", $10ddb,$10de8-$10ddb
+
+unk_044de8:
+    ld a, $0 ; 4:4de8, 0x10de8
+    ld [$c64e], a
+    ld hl, $ac00
+    ld b, $0
+    ld a, [$c64e]
+    ld c, a
+    ld a, $8
+    call $02b8
+    ld a, [de]
+    or a
+    ret z
+    push de
+    ld hl, $000b
+    add hl, de
+    ld a, [hli]
+    ld [$c650], a
+    ld a, [hl]
+    ld [$c651], a
+    ld b, $0
+.asm_10e0d
+    push bc
+    ld hl, $a640
+    ld c, b
+    ld b, $0
+    ld a, $5
+    call $02b8
+    pop bc
+    ld hl, $0001
+    add hl, de
+    ld a, [hl]
+    ld h, a
+    ld a, [$c650]
+    cp h
+    jr nz, .asm_10e32 ; 0x10e24 $c
+    ld hl, $001f
+    add hl, de
+    ld a, [hl]
+    ld h, a
+    ld a, [$c651]
+    cp h
+    jr z, .asm_10e35 ; 0x10e30 $3
+.asm_10e32
+    inc b
+    jr .asm_10e0d ; 0x10e33 $d8
+.asm_10e35
+    ld h, d
+    ld l, e
+    pop de
+    push hl
+    ld hl, $0080
+    add hl, de
+    ld d, h
+    ld e, l
+    pop hl
+    ld b, $20
+.asm_10e42
+    ld a, [hli]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .asm_10e42 ; 0x10e46 $fa
+    ld a, [$c64e]
+    inc a
+    ld [$c64e], a
+    cp $3
+    jp nz, $4ded
+    ret
+	;10e55
+	
+unk_044e55:
+    xor a
+    ld [$c5c2], a
+    ld hl, $ac00
+    ld b, $0
+    ld a, [$c5c2]
+    ld c, a
+    ld a, $8
+    call $02b8
+    ld a, [de]
+    or a
+    jp z, $4efa
+    push de
+    ld hl, $000d
+    add hl, de
+    ld a, [hl]
+    and $7f
+    ld c, a
+    ld a, $0
+    ld de, $9010
+    call $0297
+    pop de
+    push de
+    ld hl, $000e
+    add hl, de
+    ld a, [hl]
+    and $7f
+    ld c, a
+    ld a, $1
+    ld de, $9110
+    call $0297
+    pop de
+    push de
+    ld hl, $000f
+    add hl, de
+    ld a, [hl]
+    and $7f
+    ld c, a
+    ld a, $2
+    ld de, $9200
+    call $0297
+    pop de
+    push de
+    ld hl, $0010
+    add hl, de
+    ld a, [hl]
+    and $7f
+    ld c, a
+    ld a, $3
+    ld de, $92f0
+    call $0297
+    pop de
+    xor a
+    ld [$c741], a
+.asm_10eb8
+    ld a, [$c741]
+    add $1
+    ld c, a
+    call $01b9
+    ld a, [$c741]
+    inc a
+    ld [$c741], a
+    ld a, [$c741]
+    cp $e
+    jr nz, .asm_10eb8 ; 0x10ecd $e9
+    ld a, $2
+    call $01e6
+    ld hl, $a000
+    ld b, $0
+    ld a, [$c5c2]
+    ld c, a
+    ld a, $a
+    call $02b8
+    ld hl, $9010
+    ld bc, $0400
+.asm_10ee8
+    di
+    call $016e
+    ld a, [hli]
+    ei
+    ld [de], a
+    inc de
+    dec bc
+    ld a, c
+    or b
+    jr nz, .asm_10ee8 ; 0x10ef3 $f3
+    ld a, $1
+    call $01e6
+    ld a, [$c5c2]
+    inc a
+    ld [$c5c2], a
+    cp $6
+    jp nz, $4e59
+    ret
+; 0x10f07
+INCBIN "baserom.gbc", $10f07,$10f2a-$10f07
+
+unk_044f2a:
+	xor a
+	ld [$c658], a
+	ld hl, $ac00
+	ld b, $0
+	ld a, [$c658]
+	ld c, a
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jp z, $5144
+	ld a, [$c658]
+	ld hl, $0020
+	add hl, de
+	ld [hl], a
+	ld hl, $0083
+	add hl, de
+	ld a, [hli]
+	sla a
+	ld b, a
+	ld a, [hl]
+	add b
+	ld hl, $0024
+	add hl, de
+	ld [hl], a
+	ld hl, $0012
+	add hl, de
+	ld a, [hl]
+	ld hl, $0025
+	add hl, de
+	ld [hl], a
+	ld hl, $000d
+	add hl, de
+	ld a, [hli]
+	and $7f
+	ld c, a
+	ld b, $0
+	ld a, $7
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	or a
+	jr nz, .asm_10f79 ; 0x10f77 $0
+.asm_10f79
+	ld hl, $0038
+	add hl, de
+	ld [hl], a
+	ld hl, $00d3
+	add hl, de
+	ld [hl], a
+	ld hl, $000d
+	add hl, de
+	ld a, [hli]
+	ld hl, $0039
+	add hl, de
+	ld [hl], a
+	ld hl, $000d
+	add hl, de
+	ld a, [hli]
+	and $7f
+	ld c, a
+	ld b, $0
+	ld a, $2
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $003a
+	add hl, de
+	ld [hl], a
+	ld hl, $00c0
+	add hl, de
+	ld [hl], a
+	ld hl, $000e
+	add hl, de
+	ld a, [hli]
+	ld hl, $003f
+	add hl, de
+	ld [hl], a
+	ld hl, $000e
+	add hl, de
+	ld a, [hli]
+	and $7f
+	ld c, a
+	ld b, $1
+	ld a, $2
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0040
+	add hl, de
+	ld [hl], a
+	ld hl, $00c1
+	add hl, de
+	ld [hl], a
+	ld hl, $000f
+	add hl, de
+	ld a, [hli]
+	ld hl, $0045
+	add hl, de
+	ld [hl], a
+	ld hl, $000f
+	add hl, de
+	ld a, [hli]
+	and $7f
+	ld c, a
+	ld b, $2
+	ld a, $2
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0046
+	add hl, de
+	ld [hl], a
+	ld hl, $00c2
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hli]
+	ld hl, $004b
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hli]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $2
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $004c
+	add hl, de
+	ld [hl], a
+	ld hl, $00c3
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $3
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0051
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $4
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0052
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $5
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0053
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $6
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0054
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $7
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0055
+	add hl, de
+	ld [hl], a
+	ld hl, $0010
+	add hl, de
+	ld a, [hl]
+	and $7f
+	ld c, a
+	ld b, $3
+	ld a, $8
+	push de
+	call $0276
+	pop de
+	ld a, [$c64e]
+	ld hl, $0056
+	add hl, de
+	ld [hl], a
+	ld hl, $0013
+	add hl, de
+	ld a, [hl]
+	dec a
+	ld hl, $5151
+	ld b, $0
+	ld c, a
+	add hl, bc
+	ld a, [hl]
+	ld hl, $0057
+	add hl, de
+	ld [hl], a
+	xor a
+	ld [$c64e], a
+	ld [$c64f], a
+	ld hl, $00c0
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c64f]
+	add b
+	ld [$c64f], a
+	ld a, [$c64e]
+	adc $0
+	ld [$c64e], a
+	ld hl, $00c1
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c64f]
+	add b
+	ld [$c64f], a
+	ld a, [$c64e]
+	adc $0
+	ld [$c64e], a
+	ld hl, $00c2
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c64f]
+	add b
+	ld [$c64f], a
+	ld a, [$c64e]
+	adc $0
+	ld [$c64e], a
+	ld hl, $00c3
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c64f]
+	add b
+	ld [$c64f], a
+	ld a, [$c64e]
+	adc $0
+	ld [$c64e], a
+	ld hl, $0059
+	add hl, de
+	ld a, [$c64e]
+	ld [hli], a
+	ld a, [$c64f]
+	ld [hli], a
+	ld a, [$c64e]
+	ld [hli], a
+	ld a, [$c64f]
+	ld [hl], a
+	ld a, [$c658]
+	ld [$c650], a
+	call $6391
+	ld a, [$c658]
+	inc a
+	ld [$c658], a
+	cp $6
+	jp nz, $4f2e
+	ret
+; 0x11151
+unk_045151:
+	ld bc, $0001
+	nop
+	ld [bc], a
+	ld [bc], a
+	ld bc, $000e
+	xor a
+	ld [$c64e], a
+	ld [$c650], a
+	push bc
+	ld hl, $ac00
+	ld b, $0
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jr z, .asm_11184 ; 0x1116e $14
+	ld a, [$c64e]
+	inc a
+	ld [$c64e], a
+	ld hl, $0024
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c650]
+	add b
+	ld [$c650], a
+.asm_11184
+	pop bc
+	inc c
+	ld a, c
+	cp $3
+	jp nz, $5161
+	ld c, $0
+	xor a
+	ld [$c652], a
+	ld [$c654], a
+	push bc
+	ld hl, $af00
+	ld b, $0
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jr z, .asm_111b8 ; 0x111a2 $14
+	ld a, [$c652]
+	inc a
+	ld [$c652], a
+	ld hl, $0024
+	add hl, de
+	ld a, [hl]
+	ld b, a
+	ld a, [$c654]
+	add b
+	ld [$c654], a
+.asm_111b8
+	pop bc
+	inc c
+	ld a, c
+	cp $3
+	jp nz, $5195
+	ld a, [$c64e]
+	ld [$a414], a
+	ld a, [$c652]
+	ld [$a424], a
+	ld a, [$c650]
+	ld [$a415], a
+	ld a, [$c654]
+	ld [$a425], a
+	ret
+; 0x111d9
+
+INCBIN "baserom.gbc", $111d9,$1120c-$111d9
 
 SetUpMedarotData: ; 1120c 4:520c
 	ld a, [$c753]
@@ -1767,7 +2311,99 @@ SetUpMedarotData: ; 1120c 4:520c
 	ret
 ; 0x11326
 
-INCBIN "baserom.gbc", $11326,$11514-$11326
+INCBIN "baserom.gbc", $11326,$113b7-$11326
+
+unk_0453b7:
+	xor a
+	ld [$c64e], a
+	ld hl, $ac00
+	ld b, $0
+	ld a, [$c64e]
+	ld c, a
+	ld a, $8
+	call $02b8
+	ld a, [de]
+	or a
+	jp z, $5451
+	ld hl, $00c8
+	add hl, de
+	ld a, [hl]
+	ld [$c650], a
+	ld hl, $0057
+	add hl, de
+	ld a, [hl]
+	ld [$c651], a
+	ld hl, $c1e0
+	ld b, $0
+	ld a, [$c64e]
+	ld c, a
+	ld a, $5
+	call $02b8
+	ld hl, $0004
+	add hl, de
+	ld a, [$c650]
+	sla a
+	sla a
+	sla a
+	ld b, a
+	ld a, [$c651]
+	sla a
+	add b
+	add $d0
+	ld [hl], a
+	ld hl, $0017
+	add hl, de
+	ld [hl], a
+	ld hl, $5463
+	ld b, $0
+	ld a, [$c64e]
+	ld c, a
+	sla c
+	rl b
+	add hl, bc
+	ld a, [hli]
+	ld [$c652], a
+	ld a, [hl]
+	ld [$c653], a
+	ld hl, $0002
+	add hl, de
+	ld a, [$c652]
+	ld [hli], a
+	ld a, [$c653]
+	ld [hl], a
+	ld a, $11
+	ld [de], a
+	ld b, $8
+	ld a, [$c650]
+	or a
+	jr z, .asm_1143a ; 0x11433 $5
+	ld a, $21
+	ld [de], a
+	ld b, $98
+.asm_1143a
+	ld hl, $0012
+	add hl, de
+	ld a, b
+	ld [hl], a
+	ld a, [$c650]
+	sla a
+	sla a
+	ld c, a
+	ld a, [$c651]
+	add $50
+	add c
+	call $0165
+	ld a, [$c64e]
+	inc a
+	ld [$c64e], a
+	cp $6
+	jp nz, $53bb
+	ld a, $1
+	ld [$c600], a
+	ret
+; 0x11463
+
+INCBIN "baserom.gbc", $11463,$11514-$11463
 
 ;04:5514, 0x11514
     add hl, bc
