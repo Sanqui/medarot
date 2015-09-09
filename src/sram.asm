@@ -6,3 +6,13 @@ ExtraSpace:
 	ds 8
 	ds 8
 	ds 8
+ExtraSpace2:
+	ds 8
+	ds 8
+	ds 8
+	ds 8
+ExtraSpace3:
+	ds 8
+	ds 8
+	ds 8
+	ds 8
