@@ -1281,7 +1281,88 @@ LoadMedarotNameData: ;35dc to 35ff, 0x23 bytes
 	pop hl
 	ret
 
-INCBIN "baserom.gbc", $3600,$4000-$3600
+INCBIN "baserom.gbc", $3600,$39da-$3600
+;0:39da 
+PrepareDamageForDisplay: ;Writes damage characters to c705
+	push hl
+	push bc
+	push de
+	ld a, h
+	ld [$c642], a
+	ld a, l
+	ld [$c643], a
+	xor a
+	ld [$c650], a
+	ld h, b
+	ld l, c
+	ld bc, $03e8
+	call $330e
+	ld a, [$c64e]
+	or a
+	jr z, .asm_3a02 ; 0x39f5 $b
+	add $6b
+	ld b, a
+	call $3a69
+	ld a, $1
+	ld [$c650], a
+.asm_3a02
+	ld a, [$c640]
+	ld h, a
+	ld a, [$c641]
+	ld l, a
+	ld bc, $0064
+	call $330e
+	ld a, [$c64e]
+	or a
+	jr nz, .asm_3a1d ; 0x3a14 $7
+	ld a, [$c650]
+	or a
+	jr z, .asm_3a28 ; 0x3a1a $c
+	xor a
+.asm_3a1d
+	add $6b
+	ld b, a
+	call $3a69
+	ld a, $1
+	ld [$c650], a
+.asm_3a28
+	ld a, [$c640]
+	ld h, a
+	ld a, [$c641]
+	ld l, a
+	ld bc, $000a
+	call $330e
+	ld a, [$c64e]
+	or a
+	jr nz, .asm_3a43 ; 0x3a3a $7
+	ld a, [$c650]
+	or a
+	jr z, .asm_3a49 ; 0x3a40 $7
+	xor a
+.asm_3a43
+	add $6b
+	ld b, a
+	call $3a69
+.asm_3a49
+	ld a, [$c640]
+	ld h, a
+	ld a, [$c641]
+	ld l, a
+	ld bc, $0001
+	call $330e
+	ld a, [$c64e]
+	add $6b
+	ld b, a
+	call $3a69
+	ld b, $50
+	call $3a69
+	pop de
+	pop bc
+	pop hl
+	ret
+; 0x3a69
+
+INCBIN "baserom.gbc", $3a69,$4000-$3a69
 
 SECTION "bank1",DATA,BANK[$1]
 
