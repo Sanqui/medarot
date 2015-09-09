@@ -1300,7 +1300,7 @@ PrepareDamageForDisplay: ;Writes damage characters to c705
 	ld a, [$c64e]
 	or a
 	jr z, .asm_3a02 ; 0x39f5 $b
-	add $6b
+	add $80
 	ld b, a
 	call $3a69
 	ld a, $1
@@ -1320,7 +1320,7 @@ PrepareDamageForDisplay: ;Writes damage characters to c705
 	jr z, .asm_3a28 ; 0x3a1a $c
 	xor a
 .asm_3a1d
-	add $6b
+	add $80
 	ld b, a
 	call $3a69
 	ld a, $1
@@ -1340,7 +1340,7 @@ PrepareDamageForDisplay: ;Writes damage characters to c705
 	jr z, .asm_3a49 ; 0x3a40 $7
 	xor a
 .asm_3a43
-	add $6b
+	add $80
 	ld b, a
 	call $3a69
 .asm_3a49
@@ -1351,7 +1351,7 @@ PrepareDamageForDisplay: ;Writes damage characters to c705
 	ld bc, $0001
 	call $330e
 	ld a, [$c64e]
-	add $6b
+	add $80
 	ld b, a
 	call $3a69
 	ld b, $50

@@ -30,7 +30,7 @@ class Special():
         self.names = names if names else {}
 
 specials = {}
-specials["&"] = Special(0x4b, bts=3, names={0x00C923: "NAME"})
+specials["&"] = Special(0x4b, bts=3, names={0x00C923: "NAME", 0x00DFD1: "MEDA"})
 specials['S'] = Special(0x4d, default=2)
 specials['*'] = Special(0x4f, end=True)
 specials['`'] = Special(0x50, bts=0, end=True)
