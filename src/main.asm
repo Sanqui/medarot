@@ -492,7 +492,6 @@ TextTableOffsets: ; 0x1d4b
 Char4F: ; 1d6b end of text
 	;ld a, $7; Char4FAdvice
 	;rst $0
-
 	ld a, $12
 	rst $8 ;SetFlag4F
 
@@ -576,7 +575,7 @@ Char4F: ; 1d6b end of text
 	jr z, .asm_1d89 ; 0x1df3 $94
 	ld a, [$c6c5]
 	cp $10
-	jp z, $1e03
+	jp z, .asm_1e03
 	inc a
 	ld [$c6c5], a
 	pop hl
