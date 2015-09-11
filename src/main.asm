@@ -509,7 +509,7 @@ Char4F: ; 1d6b end of text
 	jr z, .asm_1d89 ; 0x1d7b $c
 	ld a, [$c6c5]
 	cp $10
-	jp z, $1d8b
+	jp z, .asm_1d8b
 	inc a
 	ld [$c6c5], a
 .asm_1d89
