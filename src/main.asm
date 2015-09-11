@@ -550,7 +550,7 @@ Char4F: ; 1d6b end of text
 	jr z, .asm_1d89 ; 0x1dc5 $c2
 	ld a, [$c6c5]
 	cp $10
-	jp z, $1dd5
+	jp z, .asm_1dd5
 	inc a
 	ld [$c6c5], a
 	pop hl
@@ -667,7 +667,7 @@ Char4C: ; 0x1e62
 	ret z
 	ld a, [$c6c5]
 	cp $10
-	jp z, $1e94
+	jp z, .asm_1e94
 	inc a
 	ld [$c6c5], a
 	ret
