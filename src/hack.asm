@@ -553,6 +553,10 @@ Char4BAdvice2:
 	ret
 
 ResetBank:
+	ld a, [WTextOffsetHi]
+	cp $00
+	jr nz, .ResetBankRet
+	
 	ld a, $1
 	ld [$c600], a
 
