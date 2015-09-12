@@ -588,6 +588,8 @@ CheckBank:
 SetFlag4F:
 	ld a, $01
 	ld [Flag4F], a
+	xor a
+	ld [$c600], a
 	ret
 
 SetInitialName: ;9 total: 8 name + 0x50 for terminator
